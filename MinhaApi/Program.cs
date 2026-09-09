@@ -23,6 +23,14 @@ builder.Services.AddScoped<
     ProdutoService>();
 
 builder.Services.AddScoped<
+    IClienteService,
+    ClienteService>();
+
+builder.Services.AddScoped<
+    IClienteRepository,
+    ClienteRepository>();
+    
+builder.Services.AddScoped<
     ITipoService,
     TipoService>();
 
