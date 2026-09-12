@@ -15,7 +15,7 @@ public class ClienteRepository : IClienteRepository
         using var conn = new MySqlConnection(_connectionString);
         conn.Open();
 
-        string sql = "SELECT id, nome, email, cpf, ativo FROM cliente";
+        string sql = "SELECT idCliente, nome, email, cpf, ativo FROM cliente";
         using var cmd = new MySqlCommand(sql, conn);
         using var reader = cmd.ExecuteReader();
 
@@ -23,7 +23,7 @@ public class ClienteRepository : IClienteRepository
         {
             lista.Add(new Cliente 
             {
-                Id = reader.GetInt32("id"),
+                Id = reader.GetInt32("idCliente"),
                 Nome = reader.GetString("nome"),
                 Email = reader.GetString("email"),
                 Cpf = reader.GetString("cpf"),
@@ -38,7 +38,7 @@ public class ClienteRepository : IClienteRepository
         using var conn = new MySqlConnection(_connectionString);
         conn.Open();
 
-        const string sql = "SELECT id, nome, email, cpf, ativo FROM cliente WHERE id = @Id";
+        const string sql = "SELECT idCliente, nome, email, cpf, ativo FROM cliente WHERE idCliente = @Id";
         using var cmd = new MySqlCommand(sql, conn);
         cmd.Parameters.AddWithValue("@Id", id);
         using var reader = cmd.ExecuteReader();
@@ -48,7 +48,7 @@ public class ClienteRepository : IClienteRepository
 
         return new Cliente
         {
-            Id = reader.GetInt32("id"),
+            Id = reader.GetInt32("idCliente"),
             Nome = reader.GetString("nome"),
             Email = reader.GetString("email"),
             Cpf = reader.GetString("cpf"),
@@ -80,7 +80,7 @@ public class ClienteRepository : IClienteRepository
         using var conn = new MySqlConnection(_connectionString);
         conn.Open();
         string sql = @"UPDATE cliente
-                     SET nome = @Nome, email = @Email, cpf = @Cpf, ativo = @Ativo WHERE id = @Id";
+                     SET nome = @Nome, email = @Email, cpf = @Cpf, ativo = @Ativo WHERE idCliente = @Id";
         using var cmd = new MySqlCommand(sql, conn);
         cmd.Parameters.AddWithValue("@Id", c.Id);
         cmd.Parameters.AddWithValue("@Nome", c.Nome);
@@ -94,7 +94,7 @@ public class ClienteRepository : IClienteRepository
     {
         using var conn = new MySqlConnection(_connectionString);
         conn.Open();
-        string sql = "DELETE FROM cliente WHERE id = @Id";
+        string sql = "DELETE FROM cliente WHERE idCliente = @Id";
         using var cmd = new MySqlCommand(sql, conn);
         cmd.Parameters.AddWithValue("@Id", id);
         cmd.ExecuteNonQuery();
