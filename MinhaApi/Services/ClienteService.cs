@@ -17,7 +17,8 @@ public class ClienteService : IClienteService
 
   public Cliente Create(Cliente cliente)
   {
-    
+      if (cliente.Email == null && cliente.Nome == null && cliente.Cpf == null)
+          throw new ArgumentException("Usuário inválido");
       _repo.Add(cliente);
       return cliente;
   }

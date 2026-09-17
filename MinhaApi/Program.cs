@@ -1,6 +1,6 @@
 using MinhaApi.Repositories;
 using MinhaApi.Services;
-using System.ComponentModel.DataAnnotations;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,16 +23,32 @@ builder.Services.AddScoped<
     ProdutoService>();
 
 builder.Services.AddScoped<
+    ITipoService,
+    TipoService>();
+
+builder.Services.AddScoped<
     IClienteService,
     ClienteService>();
 
 builder.Services.AddScoped<
     IClienteRepository,
     ClienteRepository>();
+
+builder.Services.AddScoped<
+    IVendaRepository,
+    VendaRepository>();
     
 builder.Services.AddScoped<
-    ITipoService,
-    TipoService>();
+    IVendaService,
+    VendaService>();
+
+builder.Services.AddScoped<
+    IFornecedorService,
+    FornecedorService>();
+
+builder.Services.AddScoped<
+    IFornecedorRepository,
+    FornecedorRepository>();
 
 
 var app = builder.Build();

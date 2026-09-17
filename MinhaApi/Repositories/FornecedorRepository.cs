@@ -1,95 +1,96 @@
 using MinhaApi.Models;
 using MinhaApi.Repositories;
 using MySqlConnector;
-public class ClienteRepository : IClienteRepository
+public class FornecedorRepository : IFornecedorRepository
 {
     private readonly string _connectionString;
 
-      public ClienteRepository(IConfiguration config) 
+      public FornecedorRepository(IConfiguration config) 
       => _connectionString = config.GetConnectionString("DefaultConnection")!;
-    private static List<Cliente> _db = new()
-    {
-    };
 
-     public IEnumerable<Cliente> GetAll() 
+     public IEnumerable<Fornecedor> GetAll() 
      {
-        var lista = new List<Cliente>();
+        var lista = new List<Fornecedor>();
         using var conn = new MySqlConnection(_connectionString);
         conn.Open();
 
-        string sql = "SELECT id, nome, email, cpf, ativo FROM cliente";
+        string sql = "SELECT id, nome, email, cnpj, telefone, ativo FROM fornecedor";
         using var cmd = new MySqlCommand(sql, conn);
         using var reader = cmd.ExecuteReader();
 
         while (reader.Read()) 
         {
-            lista.Add(new Cliente 
+            lista.Add(new Fornecedor 
             {
                 Id = reader.GetInt32("id"),
                 Nome = reader.GetString("nome"),
                 Email = reader.GetString("email"),
-                Cpf = reader.GetString("cpf"),
+                Cnpj = reader.GetString("cnpj"),
+                Telefone = reader.GetInt32("telefone"),
                 Ativo = reader.GetBoolean("ativo")
             });
         }
         return lista;
      }
     
-    public Cliente? GetById(int id)
+    public Fornecedor? GetById(int id)
     {
         using var conn = new MySqlConnection(_connectionString);
         conn.Open();
 
-        string sql = "SELECT id, nome, email, cpf, ativo FROM cliente WHERE id = @Id";
+        string sql = "SELECT id, nome, email, cnpj, telefone, ativo FROM fornecedor WHERE id = @Id";
         using var cmd = new MySqlCommand(sql, conn);
         cmd.Parameters.AddWithValue("@Id",id);
         using var reader = cmd.ExecuteReader();
 
         if (reader.Read()) 
         {
-            return new Cliente()
+            return new Fornecedor()
             {
                 Id = reader.GetInt32("id"),
                 Nome = reader.GetString("nome"),
                 Email = reader.GetString("email"),
-                Cpf = reader.GetString("cpf"),
+                Cnpj = reader.GetString("cnpj"),
+                Telefone = reader.GetInt32("telefone"),
                 Ativo = reader.GetBoolean("ativo")
             };
         }
         return null;
     }
 
-    public void Add(Cliente c) 
+    public void Add(Fornecedor f) 
     {
         using var conn = new MySqlConnection(_connectionString);
         conn.Open();
 
-        string sql = @"INSERT INTO cliente (nome, email, cpf, ativo) 
-                    VALUES (@Nome, @Email, @Cpf, @Ativo);
+        string sql = @"INSERT INTO fornecedor (nome, email, cnpj, telefone, ativo) 
+                    VALUES (@Nome, @Email, @Cnpj, @Telefone @Ativo);
                     SELECT LAST_INSERT_ID();";
 
         using var cmd = new MySqlCommand(sql, conn);
-        cmd.Parameters.AddWithValue("@Nome", c.Nome);
-        cmd.Parameters.AddWithValue("@Email", c.Email);
-        cmd.Parameters.AddWithValue("@Cpf", c.Cpf);
-        cmd.Parameters.AddWithValue("@Ativo", c.Ativo);
+        cmd.Parameters.AddWithValue("@Nome",f.Nome);
+        cmd.Parameters.AddWithValue("@Email", f.Email);
+        cmd.Parameters.AddWithValue("@Cnpj", f.Cnpj);
+        cmd.Parameters.AddWithValue("@Telefone", f.Telefone);
+        cmd.Parameters.AddWithValue("@Ativo", f.Ativo);
+        
 
         var idGerado = cmd.ExecuteScalar();
-        c.Id = Convert.ToInt32(idGerado);
+        f.Id = Convert.ToInt32(idGerado);
     }
 
-    public void Update(Cliente c)
+    public void Update(Fornecedor f)
     {
         using var conn = new MySqlConnection(_connectionString);
         conn.Open();
-        string sql = @"UPDATE cliente
-                     SET nome = @Nome, email = @Email, cpf = @Cpf, ativo = @Ativo WHERE id = @Id";
+        string sql = @"UPDATE fornecedor
+                     SET nome = @Nome, email = @Email, cnpj = @Cnpj, telefone = @Telefone, ativo = @Ativo WHERE id = @Id";
         using var cmd = new MySqlCommand(sql, conn);
-        cmd.Parameters.AddWithValue("@Id", c.Id);
-        cmd.Parameters.AddWithValue("@Nome", c.Nome);
-        cmd.Parameters.AddWithValue("@Email", c.Email);
-        cmd.Parameters.AddWithValue("@Cpf", c.Cpf);
-        cmd.Parameters.AddWithValue("@Ativo", c.Ativo);
+        cmd.Parameters.AddWithValue("@Id", f.Id);
+        cmd.Parameters.AddWithValue("@Nome", f.Nome);
+        cmd.Parameters.AddWithValue("@Email", f.Email);
+        cmd.Parameters.AddWithValue("@Cpf", f.Cnpj);
+        cmd.Parameters.AddWithValue("@Ativo", f.Ativo);
         cmd.ExecuteNonQuery();
     }
 
@@ -97,7 +98,7 @@ public class ClienteRepository : IClienteRepository
     {
         using var conn = new MySqlConnection(_connectionString);
         conn.Open();
-        string sql = "UPDATE cliente SET ativo = false WHERE id = @Id";
+        string sql = "UPDATE fornecedor SET ativo = false WHERE id = @Id";
         using var cmd = new MySqlCommand(sql, conn);
         cmd.Parameters.AddWithValue("@Ativo", false);
         cmd.Parameters.AddWithValue("@Id", id);

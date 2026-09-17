@@ -21,7 +21,7 @@ public class ProdutoController : ControllerBase
     }
 
 // GET /api/produto/1
-    [HttpGet("id")]
+    [HttpGet("{id}")]
     public IActionResult GetById(int id)
     {
         var produto = _service.GetById(id);
