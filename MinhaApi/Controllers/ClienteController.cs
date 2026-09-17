@@ -21,7 +21,7 @@ public class ClienteController : ControllerBase
     }
 
 // GET /api/cliente/1
-    [HttpGet("id")]
+    [HttpGet("{id}")]
     public IActionResult GetById(int id)
     {
         var cliente = _service.GetById(id);
