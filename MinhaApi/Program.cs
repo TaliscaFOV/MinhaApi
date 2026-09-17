@@ -1,6 +1,6 @@
 using MinhaApi.Repositories;
 using MinhaApi.Services;
-
+using System.ComponentModel.DataAnnotations;
 
 var builder = WebApplication.CreateBuilder(args);
 

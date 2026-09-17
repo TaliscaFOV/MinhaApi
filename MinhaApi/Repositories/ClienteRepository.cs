@@ -15,7 +15,7 @@ public class ClienteRepository : IClienteRepository
         using var conn = new MySqlConnection(_connectionString);
         conn.Open();
 
-        string sql = "SELECT idCliente, nome, email, cpf, ativo FROM cliente";
+        string sql = "SELECT idCliente, nome, email, cpf, ativo FROM cliente WHERE ativo = 1";
         using var cmd = new MySqlCommand(sql, conn);
         using var reader = cmd.ExecuteReader();
 

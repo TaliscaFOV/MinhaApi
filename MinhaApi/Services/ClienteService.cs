@@ -17,8 +17,7 @@ public class ClienteService : IClienteService
 
   public Cliente Create(Cliente cliente)
   {
-      if (cliente.Nome == null || cliente.Nome == "")
-          throw new ArgumentException("Nome inválido");
+    
       _repo.Add(cliente);
       return cliente;
   }

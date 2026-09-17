@@ -34,11 +34,7 @@ public class ClienteController : ControllerBase
     [HttpPost]
     public IActionResult Create([FromBody] Cliente cliente)
     {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-
+       
         var criado = _service.Create(cliente);
 
         return CreatedAtAction(
@@ -60,7 +56,7 @@ public class ClienteController : ControllerBase
 
 // DELETE /api/cliente/1
     [HttpDelete("{id}")]
-    public IActionResult Delete(int id)
+    public IActionResult SoftDelete(int id)
     {
         var deletado = _service.Delete(id);
 
