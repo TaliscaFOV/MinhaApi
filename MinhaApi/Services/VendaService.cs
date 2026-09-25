@@ -1,12 +1,20 @@
+<<<<<<< HEAD
 using System.Reflection.Metadata.Ecma335;
 using MinhaApi.DTO;
 using MinhaApi.Models;
 using MinhaApi.Repositories;
 using MinhaApi.Services;
+=======
+using MinhaApi.Models;
+using MinhaApi.Repositories;
+
+namespace MinhaApi.Services;
+>>>>>>> c6875324e701d04b3e7e4fbbc65f900ef7c35a16
 
 public class VendaService : IVendaService
 {
     private readonly IVendaRepository _repo;
+<<<<<<< HEAD
     private readonly IProdutoRepository _repoProduto;
     private readonly IClienteRepository _repoCliente;
 
@@ -90,5 +98,30 @@ public class VendaService : IVendaService
             Total_Venda = venda.Total_Venda,
             Data_Venda = venda.Data_Venda
         };
+=======
+    private readonly IClienteRepository _clienteRepo;
+
+    public VendaService(IVendaRepository repo, IClienteRepository clienteRepo)
+    {
+        _repo = repo;
+        _clienteRepo = clienteRepo;
+    }
+
+    public IEnumerable<Venda> GetAll()
+        => _repo.GetAll();
+
+    public Venda? GetById(int id)
+        => _repo.GetById(id);
+
+    public Venda Create(Venda venda)
+    {
+        // Valida se o cliente existe antes de registrar a venda
+        if (_clienteRepo.GetById(venda.IdCliente) == null)
+            throw new Exception("Cliente não encontrado");
+
+        // O repository valida produto, estoque, baixa estoque e calcula os preços
+        _repo.Add(venda);
+        return venda;
+>>>>>>> c6875324e701d04b3e7e4fbbc65f900ef7c35a16
     }
 }

@@ -7,6 +7,7 @@ public class ProdutoRepository : IProdutoRepository
 
       public ProdutoRepository(IConfiguration config) 
       => _connectionString = config.GetConnectionString("DefaultConnection")!;
+<<<<<<< HEAD
     private static List<Produto> _db = new()
     {
         new Produto { Id = 1, Nome = "Bicicleta", Preco = 2500m, Estoque = 10},
@@ -14,6 +15,8 @@ public class ProdutoRepository : IProdutoRepository
         new Produto {Id = 2, Nome = "Cafeteira", Preco = 89.90m, Estoque = 50}
     };
 
+=======
+>>>>>>> c6875324e701d04b3e7e4fbbc65f900ef7c35a16
      public IEnumerable<Produto> GetAll() 
      {
         var lista = new List<Produto>();
@@ -38,27 +41,46 @@ public class ProdutoRepository : IProdutoRepository
         return lista;
      }
     
-    public Produto? GetById(int id)
-        => _db.FirstOrDefault(p => p.Id == id);
+public Produto? GetById(int id)
+{
+    using var conn = new MySqlConnection(_connectionString);
+    conn.Open();
 
-    public void Add(Produto p) 
+    const string sql = "SELECT idProduto, nome, preco, estoque, ativo FROM produto WHERE idProduto = @Id";
+    using var cmd = new MySqlCommand(sql, conn);
+    cmd.Parameters.AddWithValue("@Id", id);
+    using var reader = cmd.ExecuteReader();
+
+    if (!reader.Read())
+        return null;
+
+    return new Produto
     {
-        using var conn = new MySqlConnection(_connectionString);
-        conn.Open();
+        Id = reader.GetInt32("idProduto"),
+        Nome = reader.GetString("nome"),
+        Preco = reader.GetDecimal("preco"),
+        Estoque = reader.GetInt32("estoque"),
+        Ativo = reader.GetBoolean("ativo")
+    };
+}
 
-        string sql = @"INSERT INTO produto (nome, preco, estoque, ativo) 
-                    VALUES (@Nome, @Preco, @Estoque, @Ativo);
-                    SELECT LAST_INSERT_ID();";
+    public void Add(Produto p)
+{
+    using var conn = new MySqlConnection(_connectionString);
+    conn.Open();
 
-        using var cmd = new MySqlCommand(sql, conn);
-        cmd.Parameters.AddWithValue("@Nome", p.Nome);
-        cmd.Parameters.AddWithValue("@Preco", p.Preco);
-        cmd.Parameters.AddWithValue("@Estoque", p.Estoque);
-        cmd.Parameters.AddWithValue("@Ativo", p.Ativo);
+    const string sql = @"INSERT INTO produto (nome, preco, estoque, ativo)
+                         VALUES (@Nome, @Preco, @Estoque, @Ativo);
+                         SELECT LAST_INSERT_ID();";
+    using var cmd = new MySqlCommand(sql, conn);
+    cmd.Parameters.AddWithValue("@Nome", p.Nome);
+    cmd.Parameters.AddWithValue("@Preco", p.Preco);
+    cmd.Parameters.AddWithValue("@Estoque", p.Estoque);
+    cmd.Parameters.AddWithValue("@Ativo", p.Ativo);
 
-        var idGerado = cmd.ExecuteScalar();
-        p.Id = Convert.ToInt32(idGerado);
-    }
+    var idGerado = cmd.ExecuteScalar();
+    p.Id = Convert.ToInt32(idGerado);
+}
 
     public void Update(Produto p)
     {

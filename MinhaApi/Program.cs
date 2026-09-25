@@ -15,10 +15,6 @@ builder.Services.AddScoped<
     ProdutoRepository>();
 
 builder.Services.AddScoped<
-    ITipoRepository,
-    TipoRepository>();
-
-builder.Services.AddScoped<
     IProdutoService,
     ProdutoService>();
 
@@ -39,6 +35,7 @@ builder.Services.AddScoped<
     VendaRepository>();
     
 builder.Services.AddScoped<
+<<<<<<< HEAD
     IVendaService,
     VendaService>();
 
@@ -50,7 +47,14 @@ builder.Services.AddScoped<
     IFornecedorRepository,
     FornecedorRepository>();
 
+=======
+    IVendaRepository,
+    VendaRepository>();
+>>>>>>> c6875324e701d04b3e7e4fbbc65f900ef7c35a16
 
+builder.Services.AddScoped<
+    IVendaService,
+    VendaService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
