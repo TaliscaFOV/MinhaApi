@@ -1,93 +1,86 @@
 using MinhaApi.Models;
-using MinhaApi.Repositories;
 using MySqlConnector;
+
+namespace MinhaApi.Repositories;
+
 public class ProdutoRepository : IProdutoRepository
 {
     private readonly string _connectionString;
 
-      public ProdutoRepository(IConfiguration config) 
-      => _connectionString = config.GetConnectionString("DefaultConnection")!;
-<<<<<<< HEAD
-    private static List<Produto> _db = new()
+    public ProdutoRepository(IConfiguration config)
     {
-        new Produto { Id = 1, Nome = "Bicicleta", Preco = 2500m, Estoque = 10},
+        _connectionString = config.GetConnectionString("DefaultConnection")
+            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' was not found.");
+    }
 
-        new Produto {Id = 2, Nome = "Cafeteira", Preco = 89.90m, Estoque = 50}
-    };
+    private const string Colunas = "idProduto, nome, preco, estoque, ativo";
 
-=======
->>>>>>> c6875324e701d04b3e7e4fbbc65f900ef7c35a16
-     public IEnumerable<Produto> GetAll() 
-     {
+    private static Produto LerProduto(MySqlDataReader reader)
+    {
+        return new Produto
+        {
+            Id = reader.GetInt32("idProduto"),
+            Nome = reader.GetString("nome"),
+            Preco = reader.GetDecimal("preco"),
+            Estoque = reader.GetInt32("estoque"),
+            Ativo = reader.GetBoolean("ativo")
+        };
+    }
+
+    public IEnumerable<Produto> GetAll()
+    {
         var lista = new List<Produto>();
+
         using var conn = new MySqlConnection(_connectionString);
         conn.Open();
 
-        string sql = "SELECT id, nome, preco, estoque, ativo FROM produto";
-        using var cmd = new MySqlCommand(sql, conn);
+        using var cmd = new MySqlCommand($"SELECT {Colunas} FROM produto", conn);
         using var reader = cmd.ExecuteReader();
 
-        while (reader.Read()) 
-        {
-            lista.Add(new Produto 
-            {
-                Id = reader.GetInt32("id"),
-                Nome = reader.GetString("nome"),
-                Preco = reader.GetDecimal("preco"),
-                Estoque = reader.GetInt32("estoque"),
-                Ativo = reader.GetBoolean("ativo")
-            });
-        }
+        while (reader.Read())
+            lista.Add(LerProduto(reader));
+
         return lista;
-     }
-    
-public Produto? GetById(int id)
-{
-    using var conn = new MySqlConnection(_connectionString);
-    conn.Open();
+    }
 
-    const string sql = "SELECT idProduto, nome, preco, estoque, ativo FROM produto WHERE idProduto = @Id";
-    using var cmd = new MySqlCommand(sql, conn);
-    cmd.Parameters.AddWithValue("@Id", id);
-    using var reader = cmd.ExecuteReader();
-
-    if (!reader.Read())
-        return null;
-
-    return new Produto
+    public Produto? GetById(int id)
     {
-        Id = reader.GetInt32("idProduto"),
-        Nome = reader.GetString("nome"),
-        Preco = reader.GetDecimal("preco"),
-        Estoque = reader.GetInt32("estoque"),
-        Ativo = reader.GetBoolean("ativo")
-    };
-}
+        using var conn = new MySqlConnection(_connectionString);
+        conn.Open();
+
+        using var cmd = new MySqlCommand(
+            $"SELECT {Colunas} FROM produto WHERE idProduto = @Id", conn);
+        cmd.Parameters.AddWithValue("@Id", id);
+        using var reader = cmd.ExecuteReader();
+
+        return reader.Read() ? LerProduto(reader) : null;
+    }
 
     public void Add(Produto p)
-{
-    using var conn = new MySqlConnection(_connectionString);
-    conn.Open();
+    {
+        using var conn = new MySqlConnection(_connectionString);
+        conn.Open();
 
-    const string sql = @"INSERT INTO produto (nome, preco, estoque, ativo)
-                         VALUES (@Nome, @Preco, @Estoque, @Ativo);
-                         SELECT LAST_INSERT_ID();";
-    using var cmd = new MySqlCommand(sql, conn);
-    cmd.Parameters.AddWithValue("@Nome", p.Nome);
-    cmd.Parameters.AddWithValue("@Preco", p.Preco);
-    cmd.Parameters.AddWithValue("@Estoque", p.Estoque);
-    cmd.Parameters.AddWithValue("@Ativo", p.Ativo);
+        const string sql = @"INSERT INTO produto (nome, preco, estoque, ativo)
+                             VALUES (@Nome, @Preco, @Estoque, @Ativo);
+                             SELECT LAST_INSERT_ID();";
+        using var cmd = new MySqlCommand(sql, conn);
+        cmd.Parameters.AddWithValue("@Nome", p.Nome);
+        cmd.Parameters.AddWithValue("@Preco", p.Preco);
+        cmd.Parameters.AddWithValue("@Estoque", p.Estoque);
+        cmd.Parameters.AddWithValue("@Ativo", p.Ativo);
 
-    var idGerado = cmd.ExecuteScalar();
-    p.Id = Convert.ToInt32(idGerado);
-}
+        p.Id = Convert.ToInt32(cmd.ExecuteScalar());
+    }
 
     public void Update(Produto p)
     {
         using var conn = new MySqlConnection(_connectionString);
         conn.Open();
-        string sql = @"UPDATE produto
-                     SET nome = @Nome, preco = @Preco, estoque = @Estoque, ativo = @Ativo WHERE id = @Id";
+
+        const string sql = @"UPDATE produto
+                             SET nome = @Nome, preco = @Preco, estoque = @Estoque, ativo = @Ativo
+                             WHERE idProduto = @Id";
         using var cmd = new MySqlCommand(sql, conn);
         cmd.Parameters.AddWithValue("@Id", p.Id);
         cmd.Parameters.AddWithValue("@Nome", p.Nome);
@@ -101,8 +94,8 @@ public Produto? GetById(int id)
     {
         using var conn = new MySqlConnection(_connectionString);
         conn.Open();
-        string sql = "DELETE FROM produto WHERE id = @Id";
-        using var cmd = new MySqlCommand(sql, conn);
+
+        using var cmd = new MySqlCommand("DELETE FROM produto WHERE idProduto = @Id", conn);
         cmd.Parameters.AddWithValue("@Id", id);
         cmd.ExecuteNonQuery();
     }
@@ -112,14 +105,12 @@ public Produto? GetById(int id)
         using var conn = new MySqlConnection(_connectionString);
         conn.Open();
 
-        string sql = @"UPDATE produto 
-                        SET estoque = estoque - @Quantidade 
-                        WHERE id = @Id AND estoque >= @Quantidade";
+        const string sql = @"UPDATE produto
+                             SET estoque = estoque - @Quantidade
+                             WHERE idProduto = @Id AND estoque >= @Quantidade";
         using var cmd = new MySqlCommand(sql, conn);
         cmd.Parameters.AddWithValue("@Quantidade", quantidade);
         cmd.Parameters.AddWithValue("@Id", id);
-
         cmd.ExecuteNonQuery();
     }
-
 }

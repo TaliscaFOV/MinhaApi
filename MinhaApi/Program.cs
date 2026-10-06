@@ -6,56 +6,25 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddControllers();
 
-builder.Services.AddScoped<
-    IProdutoRepository,
-    ProdutoRepository>();
+// Repositórios
+builder.Services.AddScoped<IProdutoRepository, ProdutoRepository>();
+builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
+builder.Services.AddScoped<IVendaRepository, VendaRepository>();
+builder.Services.AddScoped<IFornecedorRepository, FornecedorRepository>();
+builder.Services.AddScoped<IDepartamentoRepository, DepartamentoRepository>();
+builder.Services.AddScoped<ITipoRepository, TipoRepository>();
 
-builder.Services.AddScoped<
-    IProdutoService,
-    ProdutoService>();
-
-builder.Services.AddScoped<
-    ITipoService,
-    TipoService>();
-
-builder.Services.AddScoped<
-    IClienteService,
-    ClienteService>();
-
-builder.Services.AddScoped<
-    IClienteRepository,
-    ClienteRepository>();
-
-builder.Services.AddScoped<
-    IVendaRepository,
-    VendaRepository>();
-    
-builder.Services.AddScoped<
-    IVendaService,
-    VendaService>();
-
-builder.Services.AddScoped<
-    IFornecedorService,
-    FornecedorService>();
-
-builder.Services.AddScoped<
-    IFornecedorRepository,
-    FornecedorRepository>();
-
-builder.Services.AddScoped<
-    IVendaService,
-    VendaService>();
-builder.Services.AddScoped<
-    IDepartamentoService,
-    DepartamentoService>();
-
-builder.Services.AddScoped<
-    IDepartamentoRepository,
-    DepartamentoRepository>();
+// Serviços
+builder.Services.AddScoped<IProdutoService, ProdutoService>();
+builder.Services.AddScoped<IClienteService, ClienteService>();
+builder.Services.AddScoped<IVendaService, VendaService>();
+builder.Services.AddScoped<IFornecedorService, FornecedorService>();
+builder.Services.AddScoped<IDepartamentoService, DepartamentoService>();
+builder.Services.AddScoped<ITipoService, TipoService>();
 
 var app = builder.Build();
 
@@ -63,7 +32,10 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+app.UseSwaggerUI();
+
+app.UseCors("front");
+app.MapControllers();
 }
 
 app.MapControllers();

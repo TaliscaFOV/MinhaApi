@@ -1,9 +1,15 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace MinhaApi.DTO;
 
-public class VendaRequest()
+public class VendaRequest
 {
-    public int Id_Produto {get; set;}
-    public int Id_Cliente {get; set;}
-    public int Quantidade {get; set;}
-    public decimal Preco { get; internal set; }
+    [Required]
+    public int IdProduto { get; set; }
+
+    [Required]
+    public int IdCliente { get; set; }
+
+    [Range(1, int.MaxValue, ErrorMessage = "A quantidade deve ser maior que zero.")]
+    public int Quantidade { get; set; }
 }

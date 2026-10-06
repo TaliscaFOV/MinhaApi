@@ -1,7 +1,5 @@
-
-export default App
 import { useEffect, useState } from 'react'
-import { type Produto } from './types/Produto'
+import {type Produto } from './types/Produto'
 import { produtoService } from './services/ProdutoService'
 import ProdutoForm from './components/ProdutoForm'
 import ProdutoList from './components/ProdutoList'
@@ -37,3 +35,5 @@ function App() {
     </div>
   )
 }
+
+export default App

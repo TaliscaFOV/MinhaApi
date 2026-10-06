@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 namespace MinhaApi.Models;
 
 public class Departamento{
@@ -9,6 +8,7 @@ public class Departamento{
         = string.Empty;
         
     public string Descricao {get; set;}
+        = string.Empty;
 
     public bool Ativo {get; set;}
         = true;

@@ -20,11 +20,10 @@ public class FornecedorController : ControllerBase
         return Ok(fornecedor);
     }
 
-// GET /api/produto/1
     [HttpGet("id")]
     public IActionResult GetById(int id)
     {
-        var fornecedor = _service.GetById(id);
+        var fornecedor = ((dynamic)_service).GetById(id);
         if (fornecedor == null)
             return NotFound();
         return Ok(fornecedor);
