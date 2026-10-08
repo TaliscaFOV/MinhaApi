@@ -1,12 +1,12 @@
 import api from './api'
-import {type Clientes,type NovoClientes } from '../types/Clientes'
+import {type Clientes,type NovoCliente } from '../types/Clientes'
 
-export const clienteService = {
+export const clientesService = {
   listar: async (): Promise<Clientes[]> => {
     const { data } = await api.get('/cliente')
     return data
   },
-  criar: async (c: NovoClientes): Promise<Clientes> => {
+  criar: async (c: NovoCliente): Promise<Clientes> => {
     const { data } = await api.post('/cliente', c)
     return data
   }
