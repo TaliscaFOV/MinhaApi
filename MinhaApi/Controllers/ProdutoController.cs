@@ -7,9 +7,9 @@ using MinhaApi.Services;
 [Route("api/[controller]")]
 public class ProdutoController : ControllerBase
 {
-    private readonly IProdutoService _service;
+    private readonly IProdutosService _service;
 
-    public ProdutoController(IProdutoService service)
+    public ProdutoController(IProdutosService service)
     => _service = service;
 
     //GET / api/produto
@@ -32,7 +32,7 @@ public class ProdutoController : ControllerBase
 
 // POST /api/produto
     [HttpPost]
-    public IActionResult Create([FromBody] Produto produto)
+    public IActionResult Create([FromBody] Produtos produto)
     {
         if (!ModelState.IsValid)
         {
@@ -48,7 +48,7 @@ public class ProdutoController : ControllerBase
     }
 // PUT /api/produto/1
     [HttpPut("{id}")]
-    public IActionResult Update(int id, [FromBody] Produto produto)
+    public IActionResult Update(int id, [FromBody] Produtos produto)
     {
         var atualizado = _service.Update(id, produto);
 

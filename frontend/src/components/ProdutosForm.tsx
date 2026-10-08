@@ -1,11 +1,11 @@
 import { useState, type FormEvent } from 'react'
-import { produtoService } from '../services/ProdutoService'
+import { produtosService } from '../services/ProdutosService'
 
 interface Props {
-  onProdutoCriado: () => void
+  onProdutosCriado: () => void
 }
 
-function ProdutoForm({ onProdutoCriado }: Props) {
+function ProdutosForm({ onProdutosCriado }: Props) {
   const [nome, setNome] = useState('')
   const [preco, setPreco] = useState('')
   const [estoque, setEstoque] = useState('')
@@ -18,7 +18,7 @@ function ProdutoForm({ onProdutoCriado }: Props) {
     setErro(null)
     try {
       setLoading(true)
-      await produtoService.criar({
+      await produtosService.criar({
         nome,
         preco: Number(preco),
         estoque: Number(estoque),
@@ -28,7 +28,7 @@ function ProdutoForm({ onProdutoCriado }: Props) {
       setPreco('')
       setEstoque('')
       setAtivo(false)
-      onProdutoCriado()
+      onProdutosCriado()
     } catch {
       setErro('Erro ao cadastrar. Tente novamente.')
     } finally {
@@ -73,4 +73,4 @@ function ProdutoForm({ onProdutoCriado }: Props) {
   )
 }
 
-export default ProdutoForm
+export default ProdutosForm

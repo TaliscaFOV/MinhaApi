@@ -7,12 +7,12 @@ namespace MinhaApi.Services;
 public class VendaService : IVendaService
 {
     private readonly IVendaRepository _repo;
-    private readonly IProdutoRepository _repoProduto;
+    private readonly IProdutosRepository _repoProduto;
     private readonly IClienteRepository _repoCliente;
 
     public VendaService(
         IVendaRepository repo,
-        IProdutoRepository repoProduto,
+        IProdutosRepository repoProduto,
         IClienteRepository repoCliente)
     {
         _repo = repo;

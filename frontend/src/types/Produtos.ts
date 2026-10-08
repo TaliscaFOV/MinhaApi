@@ -1,4 +1,4 @@
-export interface Produto {
+export interface Produtos {
   id: number
   nome: string
   preco: number
@@ -6,4 +6,4 @@ export interface Produto {
   ativo : boolean 
 }
 // Tipo para criação — sem o id (gerado pela MinhaAPI)
-export type NovoProduto = Omit<Produto, 'id'>
+export type NovoProduto = Omit<Produtos, 'id'>

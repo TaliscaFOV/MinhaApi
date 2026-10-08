@@ -13,7 +13,7 @@ builder.Services.AddCors(o => o.AddPolicy("front", p =>
      .AllowAnyMethod()));
 
 // Repositórios
-builder.Services.AddScoped<IProdutoRepository, ProdutoRepository>();
+builder.Services.AddScoped<IProdutosRepository, ProdutosRepository>();
 builder.Services.AddScoped<IClienteRepository, ClienteRepository>();
 builder.Services.AddScoped<IVendaRepository, VendaRepository>();
 builder.Services.AddScoped<IFornecedorRepository, FornecedorRepository>();
@@ -21,7 +21,7 @@ builder.Services.AddScoped<IDepartamentoRepository, DepartamentoRepository>();
 builder.Services.AddScoped<ITipoRepository, TipoRepository>();
 
 // Serviços
-builder.Services.AddScoped<IProdutoService, ProdutoService>();
+builder.Services.AddScoped<IProdutosService, ProdutosService>();
 builder.Services.AddScoped<IClienteService, ClienteService>();
 builder.Services.AddScoped<IVendaService, VendaService>();
 builder.Services.AddScoped<IFornecedorService, FornecedorService>();

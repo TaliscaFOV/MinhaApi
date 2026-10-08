@@ -2,20 +2,20 @@ using MinhaApi.Models;
 using MinhaApi.Repositories;
 using MinhaApi.Services;
 
-public class ProdutoService : IProdutoService
+public class ProdutosService : IProdutosService
 {
-  private readonly IProdutoRepository _repo;
+  private readonly IProdutosRepository _repo;
 
-  public ProdutoService(IProdutoRepository repo)
+  public ProdutosService(IProdutosRepository repo)
       => _repo = repo;
 
-  public IEnumerable<Produto> GetAll()
+  public IEnumerable<Produtos> GetAll()
       => _repo.GetAll();
 
-  public Produto? GetById(int id)
+  public Produtos? GetById(int id)
       => _repo.GetById(id);
 
-  public Produto Create(Produto produto)
+  public Produtos Create(Produtos produto)
   {
       if (produto.Preco < 0)
           throw new ArgumentException("Preço inválido");
@@ -23,7 +23,7 @@ public class ProdutoService : IProdutoService
       return produto;
   }
 
-  public Produto? Update(int id, Produto p)
+  public Produtos? Update(int id, Produtos p)
   {
       if (_repo.GetById(id) == null) return null;
       p.Id = id;

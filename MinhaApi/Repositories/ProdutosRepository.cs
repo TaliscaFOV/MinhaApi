@@ -3,11 +3,11 @@ using MySqlConnector;
 
 namespace MinhaApi.Repositories;
 
-public class ProdutoRepository : IProdutoRepository
+public class ProdutosRepository : IProdutosRepository
 {
     private readonly string _connectionString;
 
-    public ProdutoRepository(IConfiguration config)
+    public ProdutosRepository(IConfiguration config)
     {
         _connectionString = config.GetConnectionString("DefaultConnection")
             ?? throw new InvalidOperationException("Connection string 'DefaultConnection' was not found.");
@@ -15,9 +15,9 @@ public class ProdutoRepository : IProdutoRepository
 
     private const string Colunas = "idProduto, nome, preco, estoque, ativo";
 
-    private static Produto LerProduto(MySqlDataReader reader)
+    private static Produtos LerProduto(MySqlDataReader reader)
     {
-        return new Produto
+        return new Produtos
         {
             Id = reader.GetInt32("idProduto"),
             Nome = reader.GetString("nome"),
@@ -27,9 +27,9 @@ public class ProdutoRepository : IProdutoRepository
         };
     }
 
-    public IEnumerable<Produto> GetAll()
+    public IEnumerable<Produtos> GetAll()
     {
-        var lista = new List<Produto>();
+        var lista = new List<Produtos>();
 
         using var conn = new MySqlConnection(_connectionString);
         conn.Open();
@@ -43,7 +43,7 @@ public class ProdutoRepository : IProdutoRepository
         return lista;
     }
 
-    public Produto? GetById(int id)
+    public Produtos? GetById(int id)
     {
         using var conn = new MySqlConnection(_connectionString);
         conn.Open();
@@ -56,7 +56,7 @@ public class ProdutoRepository : IProdutoRepository
         return reader.Read() ? LerProduto(reader) : null;
     }
 
-    public void Add(Produto p)
+    public void Add(Produtos p)
     {
         using var conn = new MySqlConnection(_connectionString);
         conn.Open();
@@ -73,7 +73,7 @@ public class ProdutoRepository : IProdutoRepository
         p.Id = Convert.ToInt32(cmd.ExecuteScalar());
     }
 
-    public void Update(Produto p)
+    public void Update(Produtos p)
     {
         using var conn = new MySqlConnection(_connectionString);
         conn.Open();

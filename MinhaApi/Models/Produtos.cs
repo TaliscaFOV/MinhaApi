@@ -1,5 +1,5 @@
 namespace MinhaApi.Models;
-public class Produto
+public class Produtos
 {
     public int Id {get; set;}
 

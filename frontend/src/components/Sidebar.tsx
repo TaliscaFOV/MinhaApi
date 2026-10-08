@@ -9,7 +9,7 @@ const getLinkStyle = ({ isActive }: { isActive: boolean }) => ({
   borderLeft: isActive ? '4px solid #c8d400' : '4px solid transparent'
 })
 
-function Sidebar() {
+export default function Sidebar() {
   return (
     <nav style={{ width: '210px', background: '#1a3d5c',
       minHeight: '100vh', padding: '24px 0', flexShrink: 0 }}>
