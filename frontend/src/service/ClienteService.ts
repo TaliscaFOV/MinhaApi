@@ -1,5 +1,5 @@
 import api from './api'
-import {type Cliente,type NovoCliente } from '../types/Cliente'
+import {type Cliente,type NovoCliente } from '../type/Cliente'
 
 export const ClienteService = {
   listar: async (): Promise<Cliente[]> => {

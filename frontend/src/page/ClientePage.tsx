@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
-import {type Cliente } from '../types/Cliente'
-import { ClienteService } from '../services/ClienteService'
-import ClienteForm from '../components/ClienteForm'
-import ClienteList from '../components/ClienteList'
+import {type Cliente } from '../type/Cliente'
+import { ClienteService } from '../service/ClienteService'
+import ClienteForm from '../component/ClienteForm'
+import ClienteList from '../component/ClienteList'
 
-function ClientesPage() {
+function ClientePage() {
   const [cliente, setClientes] = useState<Cliente[]>([])
   const [loading, setLoading] = useState(false)
 
@@ -21,4 +21,4 @@ function ClientesPage() {
     <ClienteList clientes={cliente} loading={loading} />
   </div>)
 }
-export default ClientesPage
+export default ClientePage

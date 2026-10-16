@@ -14,6 +14,7 @@ export default function Sidebar() {
     <nav style={{ width: '210px', background: '#1a3d5c',
       minHeight: '100vh', padding: '24px 0', flexShrink: 0 }}>
       <div>MinhaApp</div>
+      <NavLink to="/vendas" style={getLinkStyle}>🧾 Vendas</NavLink>
       <NavLink to="/produtos" style={getLinkStyle}>📦 Produtos</NavLink>
       <NavLink to="/clientes" style={getLinkStyle}>👤 Clientes</NavLink>
     </nav>

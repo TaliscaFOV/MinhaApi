@@ -1,11 +1,11 @@
-import {type Produto } from '../types/Produto'
+import {type Produto } from '../type/Produto'
 
 interface Props {
   produtos: Produto[]
   loading: boolean
 }
 
-function ProdutosList({ produtos, loading }: Props) {
+function ProdutoList({ produtos, loading }: Props) {
 
   if (loading)
     return <p>Carregando...</p>
@@ -26,4 +26,4 @@ function ProdutosList({ produtos, loading }: Props) {
   )
 }
 
-export default ProdutosList
+export default ProdutoList

@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react'
-import { VendaService } from '../services/VendaService'
-import { ClienteService } from '../services/ClienteService'
-import { ProdutoService } from '../services/ProdutoService'
-import { type Venda } from '../types/Venda'
-import { type Cliente } from '../types/Cliente'
-import { type Produto } from '../types/Produto'
-import VendaForm from '../components/VendaForm'
-import VendasList from '../components/VendaList'
+import { VendaService } from '../service/VendaService'
+import { ClienteService } from '../service/ClienteService'
+import { ProdutoService } from '../service/ProdutoService'
+import { type Venda } from '../type/Venda'
+import { type Cliente } from '../type/Cliente'
+import { type Produto } from '../type/Produto'
+import VendaForm from '../component/VendaForm'
+import VendaList from '../component/VendaList'
 
 function VendaPage() {
   const [venda, setVendas] = useState<Venda[]>([])
@@ -42,7 +42,7 @@ function VendaPage() {
       <VendaForm clientes={cliente} produtos={produto} onVendaCriada={carregarTudo} />
       <h2>Vendas Realizadas</h2>
       {erro && <p style={{ color: 'red' }}>{erro}</p>}
-      <VendasList vendas={venda} loading={loading} />
+      <VendaList vendas={venda} loading={loading} />
     </div>
   )
 }
