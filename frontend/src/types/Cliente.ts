@@ -1,5 +1,5 @@
-// Os nomes devem coincidir com o Swagger
-export interface Clientes {
+
+export interface Cliente {
   id: number
   nome: string
   email: string
@@ -8,4 +8,4 @@ export interface Clientes {
 }
 
 export type NovoCliente =
-  Omit<Clientes, 'id' | 'ativo'>
+  Omit<Cliente, 'id' | 'ativo'>

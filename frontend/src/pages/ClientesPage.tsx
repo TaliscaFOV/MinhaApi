@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react'
-import {type Clientes } from '../types/Clientes'
-import { clientesService } from '../services/ClientesService'
+import {type Cliente } from '../types/Cliente'
+import { ClienteService } from '../services/ClienteService'
 import ClienteForm from '../components/ClienteForm'
 import ClienteList from '../components/ClienteList'
 
 function ClientesPage() {
-  const [clientes, setClientes] = useState<Clientes[]>([])
+  const [cliente, setClientes] = useState<Cliente[]>([])
   const [loading, setLoading] = useState(false)
 
   const carregarClientes = async () => {
     setLoading(true)
-    try { setClientes(await clientesService.listar()) }
+    try { setClientes(await ClienteService.listar()) }
     finally { setLoading(false) }
   }
 
@@ -18,7 +18,7 @@ function ClientesPage() {
   return (<div>
     <h1>Gestão de Cliente</h1>
     <ClienteForm onClienteCriado={carregarClientes} />
-    <ClienteList clientes={clientes} loading={loading} />
+    <ClienteList clientes={cliente} loading={loading} />
   </div>)
 }
 export default ClientesPage

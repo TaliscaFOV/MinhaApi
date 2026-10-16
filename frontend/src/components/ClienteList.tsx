@@ -1,11 +1,11 @@
-import {type Clientes } from '../types/Clientes'
+import {type Cliente } from '../types/Cliente'
 
 interface Props {
-  clientes: Clientes[]
+  clientes: Cliente[]
   loading: boolean
 }
 
-function ClientesList({ clientes, loading }: Props) {
+function ClienteList({ clientes, loading }: Props) {
   if (loading) return <p>Carregando...</p>
   if (clientes.length === 0)
     return <p>Nenhum cliente cadastrado ainda.</p>
@@ -21,4 +21,4 @@ function ClientesList({ clientes, loading }: Props) {
     </ul>
   )
 }
-export default ClientesList
+export default ClienteList

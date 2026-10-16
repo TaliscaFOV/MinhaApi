@@ -1,29 +1,29 @@
 import { useEffect, useState } from 'react'
-import { type Produtos } from '../types/Produtos'
-import { produtosService } from '../services/ProdutosService'
-import ProdutosForm from '../components/ProdutosForm'
-import ProdutosList from '../components/ProdutosList'
+import { type Produto } from '../types/Produto'
+import { ProdutoService } from '../services/ProdutoService'
+import ProdutoForm from '../components/ProdutoForm'
+import ProdutoList from '../components/ProdutoList'
 
-function ProdutosPage() {
-  const [produtos, setProdutos] = useState<Produtos[]>([])
+function ProdutoPage() {
+  const [Produto, setProdutos] = useState<Produto[]>([])
   const [loading, setLoading] = useState(false)
   const [erro, setErro] = useState<string | null>(null)
 
-  const carregarProdutos = async () => {
+  const carregarProduto = async () => {
     try {
       setLoading(true)
-      setProdutos(await produtosService.listar())
+      setProdutos(await ProdutoService.listar())
     } catch { setErro('Erro ao carregar produtos.') }
     finally { setLoading(false) }
   }
 
-  useEffect(() => { carregarProdutos() }, [])
+  useEffect(() => { carregarProduto() }, [])
 
   return (<div>
     <h1>Gestão de Produtos</h1>
-    <ProdutosForm onProdutosCriado={carregarProdutos} />
+    <ProdutoForm onProdutoCriado={carregarProduto} />
     {erro && <p>{erro}</p>}
-    <ProdutosList produtos={produtos} loading={loading} />
+    <ProdutoList produtos={Produto} loading={loading} />
   </div>)
 }
-export default ProdutosPage
+export default ProdutoPage

@@ -1,15 +1,15 @@
 // src/services/produtoService.ts
 import api from './api'
-import  {type Produtos,type NovoProduto} from '../types/Produtos'
+import  {type Produto,type NovoProduto} from '../types/Produto'
 
-export const produtosService = {
+export const ProdutoService = {
 
-  listar: async (): Promise<Produtos[]> => {
+  listar: async (): Promise<Produto[]> => {
     const { data } = await api.get('/produto')
     return data
   },
 
-  criar: async (p: NovoProduto): Promise<Produtos> => {
+  criar: async (p: NovoProduto): Promise<Produto> => {
     const { data } = await api.post('/produto', p)
     return data
   }

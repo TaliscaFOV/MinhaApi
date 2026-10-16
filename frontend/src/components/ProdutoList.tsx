@@ -1,7 +1,7 @@
-import {type Produtos } from '../types/Produtos'
+import {type Produto } from '../types/Produto'
 
 interface Props {
-  produtos: Produtos[]
+  produtos: Produto[]
   loading: boolean
 }
 
