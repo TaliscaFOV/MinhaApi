@@ -1,4 +1,4 @@
-import {type Produto } from '../type/Produto'
+import {type Produto } from '../types/Produto'
 
 interface Props {
   produtos: Produto[]

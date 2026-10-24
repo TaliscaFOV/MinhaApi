@@ -1,6 +1,15 @@
 create database if not exists minha_api_db;
 use minha_api_db;
 
+create table if not exists usuarios
+(
+    id int auto_increment primary key,
+    nome varchar(100) not null,
+    email varchar(100) not null unique,
+    senha_hash varchar(255) not null,
+    ativo tinyint(1) not null default 1
+);
+
 create table if not exists produto
 (
 	idProduto int auto_increment primary key,

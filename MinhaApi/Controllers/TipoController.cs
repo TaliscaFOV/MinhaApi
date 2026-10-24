@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using MinhaApi.Models;
 using MinhaApi.Services;
+using Microsoft.AspNetCore.Authorization;
 
-
+[Authorize]
 [ApiController]
 [Route("api/[Controller]")]
 

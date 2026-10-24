@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
-import {type Cliente } from '../type/Cliente'
-import { ClienteService } from '../service/ClienteService'
-import ClienteForm from '../component/ClienteForm'
-import ClienteList from '../component/ClienteList'
+import {type Cliente } from '../types/Cliente'
+import { ClienteService } from '../services/ClienteService'
+import ClienteForm from '../components/ClienteForm'
+import ClienteList from '../components/ClienteList'
 
 function ClientePage() {
   const [cliente, setClientes] = useState<Cliente[]>([])

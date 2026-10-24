@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
 
 const getLinkStyle = ({ isActive }: { isActive: boolean }) => ({
   display: 'block',
@@ -10,7 +11,9 @@ const getLinkStyle = ({ isActive }: { isActive: boolean }) => ({
 })
 
 export default function Sidebar() {
+  const { user, logout } = useAuth()
   return (
+    <>
     <nav style={{ width: '210px', background: '#1a3d5c',
       minHeight: '100vh', padding: '24px 0', flexShrink: 0 }}>
       <div>MinhaApp</div>
@@ -18,5 +21,11 @@ export default function Sidebar() {
       <NavLink to="/produtos" style={getLinkStyle}>📦 Produtos</NavLink>
       <NavLink to="/clientes" style={getLinkStyle}>👤 Clientes</NavLink>
     </nav>
+    <div style={{ padding: '20px', color: 'white', fontSize: '13px' }}>
+    <p>👤 {user?.nome}</p>
+    <button onClick={logout}>🚪 Sair</button>
+    </div>
+    </>
   )
+  
 }

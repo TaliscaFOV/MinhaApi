@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import { ProdutoService } from '../service/ProdutoService'
+import { ProdutoService } from '../services/ProdutoService'
 
 interface Props {
   onProdutoCriado: () => void

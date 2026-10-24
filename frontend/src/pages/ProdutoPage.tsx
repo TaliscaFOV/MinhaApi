@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
-import { type Produto } from '../type/Produto'
-import { ProdutoService } from '../service/ProdutoService'
-import ProdutoForm from '../component/ProdutoForm'
-import ProdutoList from '../component/ProdutoList'
+import { type Produto } from '../types/Produto'
+import { ProdutoService } from '../services/ProdutoService'
+import ProdutoForm from '../components/ProdutoForm'
+import ProdutoList from '../components/ProdutoList'
 
 function ProdutoPage() {
   const [Produto, setProdutos] = useState<Produto[]>([])

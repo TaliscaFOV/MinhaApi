@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import { ClienteService } from '../service/ClienteService'
+import { ClienteService } from '../services/ClienteService'
 
 interface Props {
   onClienteCriado: () => void

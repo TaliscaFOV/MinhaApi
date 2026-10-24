@@ -1,8 +1,8 @@
 import { useState, type FormEvent } from 'react'
 import axios from 'axios'
-import { VendaService } from '../service/VendaService'
-import { type Cliente } from '../type/Cliente'
-import { type Produto } from '../type/Produto'
+import { VendaService } from '../services/VendaService'
+import { type Cliente } from '../types/Cliente'
+import { type Produto } from '../types/Produto'
 
 interface Props {
   clientes: Cliente[]

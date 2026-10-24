@@ -2,7 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using MinhaApi.Models;
 using MinhaApi.Services;
 using MinhaApi.DTO;
+using Microsoft.AspNetCore.Authorization;
 
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class VendaController : ControllerBase

@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using MinhaApi.Models;
 using MinhaApi.Services;
 
-
+[Authorize]
 [ApiController]
 [Route("api/[controller]")]
 public class ClienteController : ControllerBase
