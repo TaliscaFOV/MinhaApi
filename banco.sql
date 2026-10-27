@@ -1,55 +1,68 @@
-create database if not exists minha_api_db;
-use minha_api_db;
+CREATE DATABASE IF NOT EXISTS minha_api_db;
+USE minha_api_db;
 
-create table if not exists usuarios
-(
-    id int auto_increment primary key,
-    nome varchar(100) not null,
-    email varchar(100) not null unique,
-    senha_hash varchar(255) not null,
-    ativo tinyint(1) not null default 1
-);
-
-create table if not exists produto
-(
-	idProduto int auto_increment primary key,
-    nome varchar(100) not null,
-    preco decimal(10, 2) not null,
-    estoque int not null default 0,
-    ativo tinyint(1) not null default 1
+CREATE TABLE IF NOT EXISTS produto (
+    idProduto INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    preco DECIMAL(10,2) NOT NULL,
+    estoque INT NOT NULL DEFAULT 0,
+    ativo TINYINT(1) NOT NULL DEFAULT 1
 );
 
-create table if not exists cliente
-(
-	id int auto_increment primary key,
-    nome varchar(100) not null,
-    email varchar(100) not null,
-    cpf varchar(11) not null,
-    ativo tinyint(1) not null default 1
+CREATE TABLE IF NOT EXISTS cliente (
+    idCliente INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(150) NOT NULL,
+    cpf VARCHAR(14) NOT NULL UNIQUE,
+    ativo TINYINT(1) NOT NULL DEFAULT 1
 );
 
-create table if not exists venda
-(
-	idVenda int auto_increment primary key,
-    id_produto int,
-    id_cliente int,
-    data_venda date not null,
-    valor_Unitario decimal(10, 2) not null,
-    quantidade int,
-    total_venda decimal(10, 2),
-    FOREIGN KEY (id_produto) REFERENCES produto(id),
-	FOREIGN KEY (id_cliente) REFERENCES cliente(id)
+CREATE TABLE IF NOT EXISTS venda (
+    idVenda INT AUTO_INCREMENT PRIMARY KEY,
+    quantidade INT NOT NULL,
+    data_venda DATETIME NOT NULL,
+    preco_unitario DECIMAL(10,2) NOT NULL,
+    preco_total DECIMAL(10,2) NOT NULL,
+    idCliente INT NOT NULL,
+    idProduto INT NOT NULL,
+    FOREIGN KEY (idCliente) REFERENCES cliente(idCliente),
+    FOREIGN KEY (idProduto) REFERENCES produto(idProduto)
 );
-create table if not exists funcionario(
-idFuncionario int auto_increment primary key,
-nome varchar(100) not null,
-cargo varchar(50) not null
+
+CREATE TABLE IF NOT EXISTS fornecedor (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(150) NOT NULL,
+    cnpj VARCHAR(18) NOT NULL UNIQUE,
+    telefone VARCHAR(20),
+    ativo TINYINT(1) NOT NULL DEFAULT 1
 );
-create table if not exists departamento(
-idDepartamento int auto_increment primary key,
-nome varchar (100) not null,
-descricao varchar (100),
-ativo tinyint(1)not null,
-idFuncionario int,
-FOREIGN KEY (idFuncionario) REFERENCES funcionario(idFuncionario)
+
+CREATE TABLE IF NOT EXISTS funcionario (
+    idFuncionario INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    cargo VARCHAR(50) NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS departamento (
+    idDepartamento INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    descricao VARCHAR(100),
+    ativo TINYINT(1) NOT NULL DEFAULT 1,
+    idFuncionario INT,
+    FOREIGN KEY (idFuncionario) REFERENCES funcionario(idFuncionario)
+);
+USE minha_api_db;
+
+CREATE TABLE IF NOT EXISTS usuarios (
+    id         INT AUTO_INCREMENT PRIMARY KEY,
+    nome       VARCHAR(100) NOT NULL,
+    email      VARCHAR(150) NOT NULL UNIQUE,
+    senha_hash VARCHAR(255) NOT NULL,
+    ativo      TINYINT(1)   NOT NULL DEFAULT 1
+);
+
+INSERT INTO usuarios (nome, email, senha_hash)
+VALUES ('Admin SENAI', 'admin@senai.com',
+        '$2a$11$tIH4Qqrneoh855hh.63nQOwBznC.GG8QlNEpoLPJ.7MkcAiLhW41e');
+Select * from usuarios;

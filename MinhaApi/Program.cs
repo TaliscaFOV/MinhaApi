@@ -62,5 +62,4 @@ app.UseAuthentication();  // 1º quem é você?
 app.UseAuthorization();   // 2º você pode entrar?
 app.MapControllers();
 
-Console.WriteLine(BCrypt.Net.BCrypt.HashPassword("12345678"));
 app.Run();
