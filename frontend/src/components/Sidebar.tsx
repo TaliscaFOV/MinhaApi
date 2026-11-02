@@ -15,17 +15,17 @@ export default function Sidebar() {
 
       <p className="app-sidebar-section-label">MENU PRINCIPAL</p>
       <nav className="app-sidebar-nav" aria-label="Menu principal">
-        <NavLink to="/vendas" className={({ isActive }) => `app-sidebar-link${isActive ? ' is-active' : ''}`}>
-          <span className="app-sidebar-link-icon" aria-hidden="true">▤</span>
-          <span>Vendas</span>
+        <NavLink to="/clientes" className={({ isActive }) => `app-sidebar-link${isActive ? ' is-active' : ''}`}>
+          <span className="app-sidebar-link-icon" aria-hidden="true">♙</span>
+          <span>Clientes</span>
         </NavLink>
         <NavLink to="/produtos" className={({ isActive }) => `app-sidebar-link${isActive ? ' is-active' : ''}`}>
           <span className="app-sidebar-link-icon" aria-hidden="true">▦</span>
           <span>Produtos</span>
         </NavLink>
-        <NavLink to="/clientes" className={({ isActive }) => `app-sidebar-link${isActive ? ' is-active' : ''}`}>
-          <span className="app-sidebar-link-icon" aria-hidden="true">♙</span>
-          <span>Clientes</span>
+        <NavLink to="/vendas" className={({ isActive }) => `app-sidebar-link${isActive ? ' is-active' : ''}`}>
+          <span className="app-sidebar-link-icon" aria-hidden="true">▤</span>
+          <span>Vendas</span>
         </NavLink>
       </nav>
 

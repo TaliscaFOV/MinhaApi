@@ -15,12 +15,12 @@ function Layout() {
       <main className="app-main">
         <Routes>
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/" element={<Navigate to="/produtos" replace />} />
-          <Route path="/produtos" element={
-            <ProtectedRoute><ProdutoPage /></ProtectedRoute>
-          } />
+          <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/clientes" element={
             <ProtectedRoute><ClientePage /></ProtectedRoute>
+          } />
+          <Route path="/produtos" element={
+            <ProtectedRoute><ProdutoPage /></ProtectedRoute>
           } />
           <Route path="/vendas" element={
             <ProtectedRoute><VendaPage /></ProtectedRoute>
