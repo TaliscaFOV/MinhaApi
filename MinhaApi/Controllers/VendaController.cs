@@ -14,6 +14,28 @@ public class VendaController : ControllerBase
     public VendaController(IVendaService service)
         => _service = service;
 
+    [HttpPost("pedidos")]
+    public IActionResult CreatePedido([FromBody] VendaPedidoRequest dto)
+    {
+        try
+        {
+            var criado = _service.CreatePedido(dto);
+            return CreatedAtAction(nameof(GetPedidos), criado);
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(ex.Message);
+        }
+        catch (ArgumentException ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpGet("pedidos")]
+    public IActionResult GetPedidos()
+        => Ok(_service.GetPedidos());
+
     // POST /api/venda
     [HttpPost]
     public IActionResult Create([FromBody] VendaRequest dto)

@@ -1,31 +1,41 @@
 import { NavLink } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-
-const getLinkStyle = ({ isActive }: { isActive: boolean }) => ({
-  display: 'block',
-  padding: '12px 20px',
-  color: isActive ? '#c8d400' : 'white',
-  fontWeight: isActive ? 700 : 400,
-  background: isActive ? 'rgba(255,255,255,.12)' : 'transparent',
-  borderLeft: isActive ? '4px solid #c8d400' : '4px solid transparent'
-})
+import './Sidebar.css'
 
 export default function Sidebar() {
   const { user, logout } = useAuth()
+  const iniciais = user?.nome?.trim().charAt(0).toUpperCase() || 'U'
+
   return (
-    <>
-    <nav style={{ width: '210px', background: '#1a3d5c',
-      minHeight: '100vh', padding: '24px 0', flexShrink: 0 }}>
-      <div>MinhaApp</div>
-      <NavLink to="/vendas" style={getLinkStyle}>🧾 Vendas</NavLink>
-      <NavLink to="/produtos" style={getLinkStyle}>📦 Produtos</NavLink>
-      <NavLink to="/clientes" style={getLinkStyle}>👤 Clientes</NavLink>
-    </nav>
-    <div style={{ padding: '20px', color: 'white', fontSize: '13px' }}>
-    <p>👤 {user?.nome}</p>
-    <button onClick={logout}>🚪 Sair</button>
-    </div>
-    </>
+    <aside className="app-sidebar">
+      <div className="app-sidebar-brand">
+        <span className="app-sidebar-brand-mark" aria-hidden="true">M</span>
+        <span>Minha<span>App</span></span>
+      </div>
+
+      <p className="app-sidebar-section-label">MENU PRINCIPAL</p>
+      <nav className="app-sidebar-nav" aria-label="Menu principal">
+        <NavLink to="/vendas" className={({ isActive }) => `app-sidebar-link${isActive ? ' is-active' : ''}`}>
+          <span className="app-sidebar-link-icon" aria-hidden="true">▤</span>
+          <span>Vendas</span>
+        </NavLink>
+        <NavLink to="/produtos" className={({ isActive }) => `app-sidebar-link${isActive ? ' is-active' : ''}`}>
+          <span className="app-sidebar-link-icon" aria-hidden="true">▦</span>
+          <span>Produtos</span>
+        </NavLink>
+        <NavLink to="/clientes" className={({ isActive }) => `app-sidebar-link${isActive ? ' is-active' : ''}`}>
+          <span className="app-sidebar-link-icon" aria-hidden="true">♙</span>
+          <span>Clientes</span>
+        </NavLink>
+      </nav>
+
+      <div className="app-sidebar-user">
+        <span className="app-sidebar-avatar" aria-hidden="true">{iniciais}</span>
+        <span className="app-sidebar-user-name">{user?.nome || 'Usuário'}</span>
+        <button className="app-sidebar-logout" type="button" onClick={logout} aria-label="Sair">
+          ↗
+        </button>
+      </div>
+    </aside>
   )
-  
 }

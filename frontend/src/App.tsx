@@ -5,13 +5,14 @@ import ProtectedRoute from './components/ProtectedRoute'
 import LoginPage from './pages/LoginPage'
 import ProdutoPage from './pages/ProdutoPage'
 import ClientePage from './pages/ClientePage'
+import VendaPage from './pages/VendaPage'
 
 function Layout() {
   const { isAuthenticated } = useAuth()
   return (
-    <div style={{ display: 'flex' }}>
+    <div className={`app-shell${isAuthenticated ? '' : ' app-shell--public'}`}>
       {isAuthenticated && <Sidebar />}
-      <main style={{ flex: 1, padding: '24px' }}>
+      <main className="app-main">
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/" element={<Navigate to="/produtos" replace />} />
@@ -20,6 +21,9 @@ function Layout() {
           } />
           <Route path="/clientes" element={
             <ProtectedRoute><ClientePage /></ProtectedRoute>
+          } />
+          <Route path="/vendas" element={
+            <ProtectedRoute><VendaPage /></ProtectedRoute>
           } />
         </Routes>
       </main>

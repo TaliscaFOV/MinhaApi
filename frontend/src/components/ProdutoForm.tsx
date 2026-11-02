@@ -37,39 +37,47 @@ function ProdutoForm({ onProdutoCriado }: Props) {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Cadastrar Produto</h2>
+    <section className="management-card">
+      <header className="management-card-heading">
+        <span className="management-card-heading-icon" aria-hidden="true">＋</span>
+        <div>
+          <h2>Novo produto</h2>
+          <p>Adicione um item ao catálogo</p>
+        </div>
+      </header>
+      {erro && <p className="management-notice" role="alert">{erro}</p>}
+      <form className="management-form" onSubmit={handleSubmit}>
 
-      {erro && <p style={{ color: 'red' }}>{erro}</p>}
-
-      <div>
+      <div className="management-field">
         <label htmlFor="nome">Nome</label>
         <input id="nome" type="text" value={nome}
-          onChange={e => setNome(e.target.value)} required />
+          onChange={e => setNome(e.target.value)} placeholder="Ex.: Teclado sem fio" required />
       </div>
 
-      <div>
+      <div className="management-field">
         <label htmlFor="preco">Preço</label>
         <input id="preco" type="number" step="0.01" min="0" value={preco}
-          onChange={e => setPreco(e.target.value)} required />
+          onChange={e => setPreco(e.target.value)} placeholder="0,00" required />
       </div>
 
-      <div>
+      <div className="management-field">
         <label htmlFor="estoque">Estoque</label>
         <input id="estoque" type="number" step="1" min="0" value={estoque}
-          onChange={e => setEstoque(e.target.value)} required />
+          onChange={e => setEstoque(e.target.value)} placeholder="0" required />
       </div>
 
-      <div>
-        <label htmlFor="ativo">Ativo</label>
+      <div className="management-checkbox">
         <input id="ativo" type="checkbox" checked={ativo}
           onChange={e => setAtivo(e.target.checked)} />
+        <label className="management-checkbox-label" htmlFor="ativo">Produto ativo e disponível para venda</label>
       </div>
 
-      <button type="submit" disabled={loading}>
-        {loading ? 'Salvando...' : 'Cadastrar'}
+      <button className="management-submit" type="submit" disabled={loading}>
+        {loading ? 'Salvando produto...' : 'Cadastrar produto'}
+        {!loading && <span aria-hidden="true">→</span>}
       </button>
-    </form>
+      </form>
+    </section>
   )
 }
 

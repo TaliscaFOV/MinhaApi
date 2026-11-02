@@ -17,6 +17,13 @@ CREATE TABLE IF NOT EXISTS cliente (
     ativo TINYINT(1) NOT NULL DEFAULT 1
 );
 
+CREATE TABLE IF NOT EXISTS pedido_venda (
+    idPedido INT AUTO_INCREMENT PRIMARY KEY,
+    idCliente INT NOT NULL,
+    data_venda DATETIME NOT NULL,
+    FOREIGN KEY (idCliente) REFERENCES cliente(idCliente)
+);
+
 CREATE TABLE IF NOT EXISTS venda (
     idVenda INT AUTO_INCREMENT PRIMARY KEY,
     quantidade INT NOT NULL,
@@ -25,9 +32,43 @@ CREATE TABLE IF NOT EXISTS venda (
     preco_total DECIMAL(10,2) NOT NULL,
     idCliente INT NOT NULL,
     idProduto INT NOT NULL,
+    idPedido INT NULL,
     FOREIGN KEY (idCliente) REFERENCES cliente(idCliente),
-    FOREIGN KEY (idProduto) REFERENCES produto(idProduto)
+    FOREIGN KEY (idProduto) REFERENCES produto(idProduto),
+    CONSTRAINT fk_venda_pedido FOREIGN KEY (idPedido) REFERENCES pedido_venda(idPedido)
 );
+
+SET @coluna_idPedido_existe = (
+    SELECT COUNT(*)
+    FROM information_schema.columns
+    WHERE table_schema = DATABASE()
+      AND table_name = 'venda'
+      AND column_name = 'idPedido'
+);
+SET @sql_add_idPedido = IF(
+    @coluna_idPedido_existe = 0,
+    'ALTER TABLE venda ADD COLUMN idPedido INT NULL',
+    'SELECT 1'
+);
+PREPARE stmt_add_idPedido FROM @sql_add_idPedido;
+EXECUTE stmt_add_idPedido;
+DEALLOCATE PREPARE stmt_add_idPedido;
+
+SET @fk_idPedido_existe = (
+    SELECT COUNT(*)
+    FROM information_schema.table_constraints
+    WHERE constraint_schema = DATABASE()
+      AND table_name = 'venda'
+      AND constraint_name = 'fk_venda_pedido'
+);
+SET @sql_add_fk_idPedido = IF(
+    @fk_idPedido_existe = 0,
+    'ALTER TABLE venda ADD CONSTRAINT fk_venda_pedido FOREIGN KEY (idPedido) REFERENCES pedido_venda(idPedido)',
+    'SELECT 1'
+);
+PREPARE stmt_add_fk_idPedido FROM @sql_add_fk_idPedido;
+EXECUTE stmt_add_fk_idPedido;
+DEALLOCATE PREPARE stmt_add_fk_idPedido;
 
 CREATE TABLE IF NOT EXISTS fornecedor (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -62,7 +103,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
     ativo      TINYINT(1)   NOT NULL DEFAULT 1
 );
 
-INSERT INTO usuarios (nome, email, senha_hash)
+INSERT IGNORE INTO usuarios (nome, email, senha_hash)
 VALUES ('Admin SENAI', 'admin@senai.com',
         '$2a$11$tIH4Qqrneoh855hh.63nQOwBznC.GG8QlNEpoLPJ.7MkcAiLhW41e');
 Select * from usuarios;

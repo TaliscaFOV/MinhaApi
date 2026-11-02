@@ -13,7 +13,7 @@ public class VendaRepository : IVendaRepository
     }
 
     private const string ColunasVenda =
-        "idVenda, quantidade, data_venda, preco_unitario, preco_total, idCliente, idProduto";
+        "idVenda, quantidade, data_venda, preco_unitario, preco_total, idCliente, idProduto, idPedido";
 
     private static Venda LerVenda(MySqlDataReader reader)
     {
@@ -25,7 +25,10 @@ public class VendaRepository : IVendaRepository
             PrecoUnitario = reader.GetDecimal("preco_unitario"),
             PrecoTotal = reader.GetDecimal("preco_total"),
             IdCliente = reader.GetInt32("idCliente"),
-            IdProduto = reader.GetInt32("idProduto")
+            IdProduto = reader.GetInt32("idProduto"),
+            IdPedido = reader.IsDBNull(reader.GetOrdinal("idPedido"))
+                ? null
+                : reader.GetInt32("idPedido")
         };
     }
 
@@ -122,6 +125,97 @@ public class VendaRepository : IVendaRepository
             }
 
             tx.Commit();
+        }
+        catch
+        {
+            tx.Rollback();
+            throw;
+        }
+    }
+
+    public int AddPedido(int idCliente, DateTime dataVenda, IReadOnlyList<Venda> itens)
+    {
+        using var conn = new MySqlConnection(_connectionString);
+        conn.Open();
+        using var tx = conn.BeginTransaction();
+
+        try
+        {
+            const string sqlPedido = @"INSERT INTO pedido_venda (idCliente, data_venda)
+                                       VALUES (@IdCliente, @Data);
+                                       SELECT LAST_INSERT_ID();";
+            int idPedido;
+            using (var cmd = new MySqlCommand(sqlPedido, conn, tx))
+            {
+                cmd.Parameters.AddWithValue("@IdCliente", idCliente);
+                cmd.Parameters.AddWithValue("@Data", dataVenda);
+                idPedido = Convert.ToInt32(cmd.ExecuteScalar());
+            }
+
+            foreach (var item in itens.OrderBy(item => item.IdProduto))
+            {
+                decimal precoUnitario;
+                int estoqueAtual;
+                bool ativo;
+
+                const string sqlProduto = @"SELECT preco, estoque, ativo
+                                            FROM produto
+                                            WHERE idProduto = @IdProduto
+                                            FOR UPDATE";
+                using (var cmd = new MySqlCommand(sqlProduto, conn, tx))
+                {
+                    cmd.Parameters.AddWithValue("@IdProduto", item.IdProduto);
+                    using var reader = cmd.ExecuteReader();
+                    if (!reader.Read())
+                        throw new KeyNotFoundException($"Produto {item.IdProduto} não encontrado.");
+
+                    precoUnitario = reader.GetDecimal("preco");
+                    estoqueAtual = reader.GetInt32("estoque");
+                    ativo = reader.GetBoolean("ativo");
+                }
+
+                if (!ativo)
+                    throw new ArgumentException($"O produto {item.IdProduto} está inativo.");
+                if (estoqueAtual < item.Quantidade)
+                    throw new ArgumentException(
+                        $"Estoque insuficiente para o produto {item.IdProduto}. Disponível: {estoqueAtual}.");
+
+                const string sqlBaixa = @"UPDATE produto
+                                          SET estoque = estoque - @Quantidade
+                                          WHERE idProduto = @IdProduto AND estoque >= @Quantidade";
+                using (var cmd = new MySqlCommand(sqlBaixa, conn, tx))
+                {
+                    cmd.Parameters.AddWithValue("@Quantidade", item.Quantidade);
+                    cmd.Parameters.AddWithValue("@IdProduto", item.IdProduto);
+                    if (cmd.ExecuteNonQuery() != 1)
+                        throw new ArgumentException(
+                            $"Estoque insuficiente para o produto {item.IdProduto}.");
+                }
+
+                item.IdCliente = idCliente;
+                item.IdPedido = idPedido;
+                item.DataVenda = dataVenda;
+                item.PrecoUnitario = precoUnitario;
+                item.PrecoTotal = precoUnitario * item.Quantidade;
+
+                const string sqlItem = @"INSERT INTO venda
+                    (quantidade, data_venda, preco_unitario, preco_total, idCliente, idProduto, idPedido)
+                    VALUES (@Quantidade, @Data, @PrecoUnitario, @PrecoTotal, @IdCliente, @IdProduto, @IdPedido)";
+                using (var cmd = new MySqlCommand(sqlItem, conn, tx))
+                {
+                    cmd.Parameters.AddWithValue("@Quantidade", item.Quantidade);
+                    cmd.Parameters.AddWithValue("@Data", dataVenda);
+                    cmd.Parameters.AddWithValue("@PrecoUnitario", precoUnitario);
+                    cmd.Parameters.AddWithValue("@PrecoTotal", item.PrecoTotal);
+                    cmd.Parameters.AddWithValue("@IdCliente", idCliente);
+                    cmd.Parameters.AddWithValue("@IdProduto", item.IdProduto);
+                    cmd.Parameters.AddWithValue("@IdPedido", idPedido);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+
+            tx.Commit();
+            return idPedido;
         }
         catch
         {

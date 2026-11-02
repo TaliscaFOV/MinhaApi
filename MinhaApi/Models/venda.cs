@@ -21,4 +21,6 @@ public class Venda
 
     [Required]
     public int IdProduto { get; set; }
+
+    public int? IdPedido { get; set; }
 }

@@ -1,15 +1,23 @@
-export interface Venda {
-  id: number
-  nomeCliente: string
+export interface VendaItem {
+  idProduto: number
   nomeProduto: string
   quantidade: number
-  data_Venda: string
   valor_Unitario: number
   total_Venda: number
 }
 
-export interface NovaVenda {
+export interface VendaPedido {
+  idPedido: number
+  nomeCliente: string
+  data_Venda: string
+  itens: VendaItem[]
+  total_Venda: number
+}
+
+export interface NovoPedidoVenda {
   idCliente: number
-  idProduto: number
-  quantidade: number
+  itens: Array<{
+    idProduto: number
+    quantidade: number
+  }>
 }

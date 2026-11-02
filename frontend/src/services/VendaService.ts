@@ -1,14 +1,14 @@
 import api from './api'
-import { type Venda, type NovaVenda } from '../types/Venda'
+import { type NovoPedidoVenda, type VendaPedido } from '../types/Venda'
 
 export const VendaService = {
-  listar: async (): Promise<Venda[]> => {
-    const { data } = await api.get('/venda')
+  listar: async (): Promise<VendaPedido[]> => {
+    const { data } = await api.get('/venda/pedidos')
     return data
   },
 
-  criar: async (v: NovaVenda): Promise<Venda> => {
-    const { data } = await api.post('/venda', v)
+  criar: async (pedido: NovoPedidoVenda): Promise<VendaPedido> => {
+    const { data } = await api.post('/venda/pedidos', pedido)
     return data
   },
 }
