@@ -23,7 +23,7 @@ builder.Services.AddScoped<IFornecedorRepository, FornecedorRepository>();
 builder.Services.AddScoped<IDepartamentoRepository, DepartamentoRepository>();
 builder.Services.AddScoped<ITipoRepository, TipoRepository>();
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
-
+builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 
 // Serviços
 builder.Services.AddScoped<IProdutosService, ProdutosService>();
@@ -33,6 +33,7 @@ builder.Services.AddScoped<IFornecedorService, FornecedorService>();
 builder.Services.AddScoped<IDepartamentoService, DepartamentoService>();
 builder.Services.AddScoped<ITipoService, TipoService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IDashboardService, DashboardService>();
 
 
 var jwtKey = builder.Configuration["Jwt:Key"]!;
