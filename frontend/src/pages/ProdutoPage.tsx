@@ -5,9 +5,10 @@ import ProdutoForm from '../components/ProdutoForm'
 import ProdutoList from '../components/ProdutoList'
 
 function ProdutoPage() {
-  const [Produto, setProdutos] = useState<Produto[]>([])
+  const [produtos, setProdutos] = useState<Produto[]>([])
   const [loading, setLoading] = useState(false)
   const [erro, setErro] = useState<string | null>(null)
+  const [produtoEditando, setProdutoEditando] = useState<Produto | null>(null)
 
   const carregarProduto = async () => {
     try {
@@ -20,8 +21,26 @@ function ProdutoPage() {
 
   useEffect(() => { carregarProduto() }, [])
 
-  const produtosAtivos = Produto.filter(produto => produto.ativo).length
-  const estoqueBaixo = Produto.filter(produto => produto.ativo && produto.estoque <= 5).length
+  const handleEditar = (produto: Produto) => {
+    setProdutoEditando(produto)
+  }
+
+  const handleExcluir = async (id: number) => {
+    try {
+      await ProdutoService.excluir(id)
+      carregarProduto()
+    } catch {
+      alert('Erro ao excluir produto. Tente novamente.')
+    }
+  }
+
+  const handleProdutoEditado = () => {
+    setProdutoEditando(null)
+    carregarProduto()
+  }
+
+  const produtosAtivos = produtos.filter(produto => produto.ativo).length
+  const estoqueBaixo = produtos.filter(produto => produto.ativo && produto.estoque <= 5).length
 
   return (
     <div className="management-page">
@@ -37,7 +56,7 @@ function ProdutoPage() {
       <section className="management-stats" aria-label="Resumo dos produtos">
         <article className="management-stat">
           <span className="management-stat-icon">▦</span>
-          <div><p>Produtos cadastrados</p><strong>{loading || erro ? '—' : Produto.length}</strong></div>
+          <div><p>Produtos cadastrados</p><strong>{loading || erro ? '—' : produtos.length}</strong></div>
         </article>
         <article className="management-stat">
           <span className="management-stat-icon management-stat-icon--green">✓</span>
@@ -50,18 +69,27 @@ function ProdutoPage() {
       </section>
 
       <div className="management-content-grid">
-        <ProdutoForm onProdutoCriado={carregarProduto} />
+        <ProdutoForm
+          onProdutoCriado={carregarProduto}
+          onProdutoEditado={handleProdutoEditado}
+          produto={produtoEditando}
+        />
         <section className="management-card">
           <header className="management-list-heading">
             <div>
               <h2>Seu catálogo</h2>
               <p>Produtos e disponibilidade atual</p>
             </div>
-            <span className="management-count">{Produto.length} {Produto.length === 1 ? 'produto' : 'produtos'}</span>
+            <span className="management-count">{produtos.length} {produtos.length === 1 ? 'produto' : 'produtos'}</span>
           </header>
           {erro
             ? <div className="management-load-error" role="alert">{erro}</div>
-            : <ProdutoList produtos={Produto} loading={loading} />}
+            : <ProdutoList
+                produtos={produtos}
+                loading={loading}
+                onEditar={handleEditar}
+                onExcluir={handleExcluir}
+              />}
         </section>
       </div>
     </div>

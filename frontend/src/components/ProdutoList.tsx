@@ -3,9 +3,11 @@ import {type Produto } from '../types/Produto'
 interface Props {
   produtos: Produto[]
   loading: boolean
+  onEditar?: (produto: Produto) => void
+  onExcluir?: (id: number) => void
 }
 
-function ProdutoList({ produtos, loading }: Props) {
+function ProdutoList({ produtos, loading, onEditar, onExcluir }: Props) {
   if (loading) return <div className="management-loading">Carregando produtos...</div>
   if (produtos.length === 0) {
     return (
@@ -15,6 +17,13 @@ function ProdutoList({ produtos, loading }: Props) {
         <p>Cadastre seu primeiro item usando o formulário.</p>
       </div>
     )
+  }
+
+  const handleExcluir = (id: number, e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (window.confirm('Tem certeza que deseja excluir este produto?')) {
+      onExcluir?.(id)
+    }
   }
 
   return (
@@ -31,6 +40,26 @@ function ProdutoList({ produtos, loading }: Props) {
             <span className={`management-status${p.ativo ? '' : ' management-status--inactive'}`}>
               {p.ativo ? 'Ativo' : 'Inativo'}
             </span>
+          </div>
+          <div className="management-record-actions">
+            {onEditar && (
+              <button
+                className="management-action-btn management-action-btn--edit"
+                onClick={(e) => { e.stopPropagation(); onEditar(p); }}
+                aria-label={`Editar ${p.nome}`}
+              >
+                ✎
+              </button>
+            )}
+            {onExcluir && (
+              <button
+                className="management-action-btn management-action-btn--delete"
+                onClick={(e) => handleExcluir(p.id, e)}
+                aria-label={`Excluir ${p.nome}`}
+              >
+                🗑
+              </button>
+            )}
           </div>
         </li>
       ))}

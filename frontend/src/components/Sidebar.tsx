@@ -14,6 +14,7 @@ export default function Sidebar() {
       </div>
 
       <p className="app-sidebar-section-label">MENU PRINCIPAL</p>
+      
       <nav className="app-sidebar-nav" aria-label="Menu principal">
         <NavLink to="/clientes" className={({ isActive }) => `app-sidebar-link${isActive ? ' is-active' : ''}`}>
           <span className="app-sidebar-link-icon" aria-hidden="true">♙</span>
@@ -26,6 +27,10 @@ export default function Sidebar() {
         <NavLink to="/vendas" className={({ isActive }) => `app-sidebar-link${isActive ? ' is-active' : ''}`}>
           <span className="app-sidebar-link-icon" aria-hidden="true">▤</span>
           <span>Vendas</span>
+        </NavLink>
+        <NavLink to="/dashboard" className={({ isActive }) => `app-sidebar-link${isActive ? ' is-active' : ''}`}>
+          <span className="app-sidebar-link-icon" aria-hidden="true">▣</span>
+          <span>Dashboard</span>
         </NavLink>
       </nav>
 

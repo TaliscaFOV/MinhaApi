@@ -63,8 +63,8 @@ public class FornecedorRepository : IFornecedorRepository
         using var conn = new MySqlConnection(_connectionString);
         conn.Open();
 
-        string sql = @"INSERT INTO fornecedor (nome, email, cnpj, telefone, ativo) 
-                    VALUES (@Nome, @Email, @Cnpj, @Telefone @Ativo);
+        string sql = @"INSERT INTO fornecedor (nome, email, cnpj, telefone, ativo)
+                    VALUES (@Nome, @Email, @Cnpj, @Telefone, @Ativo);
                     SELECT LAST_INSERT_ID();";
 
         using var cmd = new MySqlCommand(sql, conn);
@@ -89,7 +89,7 @@ public class FornecedorRepository : IFornecedorRepository
         cmd.Parameters.AddWithValue("@Id", f.Id);
         cmd.Parameters.AddWithValue("@Nome", f.Nome);
         cmd.Parameters.AddWithValue("@Email", f.Email);
-        cmd.Parameters.AddWithValue("@Cpf", f.Cnpj);
+        cmd.Parameters.AddWithValue("@Cnpj", f.Cnpj);
         cmd.Parameters.AddWithValue("@Ativo", f.Ativo);
         cmd.ExecuteNonQuery();
     }

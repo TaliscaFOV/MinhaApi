@@ -459,6 +459,44 @@ a {
   color: #7d899b;
 }
 
+.management-record-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.management-action-btn {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border: 0;
+  border-radius: 8px;
+  background: #f1f4f9;
+  color: #60718f;
+  font-size: 13px;
+  font-weight: 700;
+  transition: background 150ms ease, color 150ms ease, transform 150ms ease;
+}
+
+.management-action-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.management-action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.management-action-btn--edit:hover:not(:disabled) {
+  background: #edf2ff;
+  color: var(--app-blue);
+}
+
+.management-action-btn--delete:hover:not(:disabled) {
+  background: #fff0ef;
+  color: #b42318;
+}
+
 .management-empty,
 .management-loading {
   display: flex;

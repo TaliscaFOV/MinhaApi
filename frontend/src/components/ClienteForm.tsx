@@ -1,29 +1,51 @@
-import { useState, type FormEvent } from 'react'
+import { useState, type FormEvent, useEffect } from 'react'
 import { ClienteService } from '../services/ClienteService'
+import type { Cliente } from '../types/Cliente'
 
 interface Props {
   onClienteCriado: () => void
+  onClienteEditado?: () => void
+  cliente?: Cliente | null
 }
 
-function ClienteForm({ onClienteCriado }: Props) {
+function ClienteForm({ onClienteCriado, onClienteEditado, cliente }: Props) {
   const [nome, setNome] = useState('')
   const [email, setEmail] = useState('')
   const [cpf, setCpf] = useState('')
   const [loading, setLoading] = useState(false)
   const [erro, setErro] = useState<string | null>(null)
+  const isEditing = !!cliente
+
+  // Pre-populate form when editing
+  useEffect(() => {
+    if (cliente) {
+      setNome(cliente.nome)
+      setEmail(cliente.email)
+      setCpf(cliente.cpf)
+    } else {
+      setNome('')
+      setEmail('')
+      setCpf('')
+    }
+  }, [cliente])
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setErro(null)
     try {
       setLoading(true)
-      await ClienteService.criar({ nome, email, cpf })
+      if (isEditing && cliente) {
+        await ClienteService.atualizar(cliente.id, { nome, email, cpf })
+        onClienteEditado?.()
+      } else {
+        await ClienteService.criar({ nome, email, cpf })
+        onClienteCriado()
+      }
       setNome('')
       setEmail('')
       setCpf('')
-      onClienteCriado()
     } catch {
-      setErro('Erro ao cadastrar. Tente novamente.')
+      setErro(isEditing ? 'Erro ao atualizar. Tente novamente.' : 'Erro ao cadastrar. Tente novamente.')
     } finally {
       setLoading(false)
     }
@@ -32,10 +54,10 @@ function ClienteForm({ onClienteCriado }: Props) {
   return (
     <section className="management-card">
       <header className="management-card-heading">
-        <span className="management-card-heading-icon" aria-hidden="true">＋</span>
+        <span className="management-card-heading-icon" aria-hidden="true">{isEditing ? '✎' : '＋'}</span>
         <div>
-          <h2>Novo cliente</h2>
-          <p>Cadastre um contato para suas vendas</p>
+          <h2>{isEditing ? 'Editar cliente' : 'Novo cliente'}</h2>
+          <p>{isEditing ? 'Atualize os dados do cliente' : 'Cadastre um contato para suas vendas'}</p>
         </div>
       </header>
       {erro && <p className="management-notice" role="alert">{erro}</p>}
@@ -59,7 +81,7 @@ function ClienteForm({ onClienteCriado }: Props) {
         </div>
 
         <button className="management-submit" type="submit" disabled={loading}>
-          {loading ? 'Salvando cliente...' : 'Cadastrar cliente'}
+          {loading ? (isEditing ? 'Salvando alterações...' : 'Salvando cliente...') : (isEditing ? 'Atualizar cliente' : 'Cadastrar cliente')}
           {!loading && <span aria-hidden="true">→</span>}
         </button>
       </form>

@@ -4,7 +4,7 @@ public class DashboardRepository : IDashboardRepository
 {
     private readonly string _cs;
     public DashboardRepository(IConfiguration config)
-        => _cs = config.GetConnectionString("Default")!;
+        => _cs = config.GetConnectionString("DefaultConnection")!;
 
     public DashboardResumo ObterResumo(DateTime inicio)
     {
@@ -12,11 +12,11 @@ public class DashboardRepository : IDashboardRepository
         conn.Open();
         using var cmd = new MySqlCommand(@"
             SELECT
-              (SELECT COUNT(*) FROM vendas
+              (SELECT COUNT(*) FROM venda
                  WHERE data_venda >= @Inicio) AS total_vendas,
-              (SELECT COALESCE(SUM(valor_total), 0) FROM vendas
+              (SELECT COALESCE(SUM(preco_total), 0) FROM venda
                  WHERE data_venda >= @Inicio) AS faturamento,
-              (SELECT COUNT(*) FROM clientes
+              (SELECT COUNT(*) FROM cliente
                  WHERE ativo = 1) AS total_clientes", conn);
         cmd.Parameters.AddWithValue("@Inicio", inicio);
 
@@ -38,8 +38,8 @@ public class DashboardRepository : IDashboardRepository
         using var cmd = new MySqlCommand(@"
             SELECT DATE(data_venda) AS dia,
                    COUNT(*)         AS qtd,
-                   SUM(valor_total) AS total
-            FROM vendas
+                   SUM(preco_total) AS total
+            FROM venda
             WHERE data_venda >= @Inicio
             GROUP BY DATE(data_venda)
             ORDER BY dia", conn);
@@ -61,13 +61,13 @@ public class DashboardRepository : IDashboardRepository
         using var conn = new MySqlConnection(_cs);
         conn.Open();
         using var cmd = new MySqlCommand(@"
-            SELECT p.id, p.nome,
+            SELECT p.idProduto, p.nome,
                    SUM(v.quantidade)  AS qtd,
-                   SUM(v.valor_total) AS total
-            FROM vendas v
-            JOIN produtos p ON p.id = v.produto_id
+                   SUM(v.preco_total) AS total
+            FROM venda v
+            JOIN produto p ON p.idProduto = v.idProduto
             WHERE v.data_venda >= @Inicio
-            GROUP BY p.id, p.nome
+            GROUP BY p.idProduto, p.nome
             ORDER BY qtd DESC
             LIMIT @Limite", conn);
         cmd.Parameters.AddWithValue("@Inicio", inicio);
@@ -77,8 +77,8 @@ public class DashboardRepository : IDashboardRepository
         while (r.Read())
             lista.Add(new TopProduto
             {
-                ProdutoId         = Convert.ToInt32(r["id"]),
-                Nome              = r["nome"].ToString()!,
+                ProdutoId         = Convert.ToInt32(r["idProduto"]),
+                Nome              = r["nome"]?.ToString() ?? string.Empty,
                 QuantidadeVendida = Convert.ToInt32(r["qtd"]),
                 Faturamento       = Convert.ToDecimal(r["total"])
             });
@@ -91,7 +91,7 @@ public class DashboardRepository : IDashboardRepository
         using var conn = new MySqlConnection(_cs);
         conn.Open();
         using var cmd = new MySqlCommand(@"
-            SELECT id, nome, estoque FROM produtos
+            SELECT idProduto, nome, estoque FROM produto
             WHERE ativo = 1 AND estoque <= @Minimo
             ORDER BY estoque", conn);
         cmd.Parameters.AddWithValue("@Minimo", minimo);
@@ -100,35 +100,39 @@ public class DashboardRepository : IDashboardRepository
         while (r.Read())
             lista.Add(new ProdutoEstoqueBaixo
             {
-                Id      = Convert.ToInt32(r["id"]),
-                Nome    = r["nome"].ToString()!,
+                Id      = Convert.ToInt32(r["idProduto"]),
+                Nome    = r["nome"]?.ToString() ?? string.Empty,
                 Estoque = Convert.ToInt32(r["estoque"])
             });
         return lista;
-    }public List<UltimaVenda> ObterUltimasVendas(int limite)
+    }
+
+    public List<UltimaVenda> ObterUltimasVendas(DateTime inicio, int limite)
     {
         var lista = new List<UltimaVenda>();
         using var conn = new MySqlConnection(_cs);
         conn.Open();
         using var cmd = new MySqlCommand(@"
-            SELECT v.id, c.nome AS cliente, p.nome AS produto,
-                   v.quantidade, v.valor_total, v.data_venda
-            FROM vendas v
-            JOIN clientes c ON c.id = v.cliente_id
-            JOIN produtos p ON p.id = v.produto_id
+            SELECT v.idVenda, c.nome AS cliente, p.nome AS produto,
+                   v.quantidade, v.preco_total, v.data_venda
+            FROM venda v
+            JOIN cliente c ON c.idCliente = v.idCliente
+            JOIN produto p ON p.idProduto = v.idProduto
+            WHERE v.data_venda >= @Inicio
             ORDER BY v.data_venda DESC
             LIMIT @Limite", conn);
+        cmd.Parameters.AddWithValue("@Inicio", inicio);
         cmd.Parameters.AddWithValue("@Limite", limite);
 
         using var r = cmd.ExecuteReader();
         while (r.Read())
             lista.Add(new UltimaVenda
             {
-                Id         = Convert.ToInt32(r["id"]),
-                Cliente    = r["cliente"].ToString()!,
-                Produto    = r["produto"].ToString()!,
+                Id         = Convert.ToInt32(r["idVenda"]),
+                Cliente    = r["cliente"]?.ToString() ?? string.Empty,
+                Produto    = r["produto"]?.ToString() ?? string.Empty,
                 Quantidade = Convert.ToInt32(r["quantidade"]),
-                ValorTotal = Convert.ToDecimal(r["valor_total"]),
+                ValorTotal = Convert.ToDecimal(r["preco_total"]),
                 DataVenda  = Convert.ToDateTime(r["data_venda"])
             });
         return lista;

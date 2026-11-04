@@ -1,7 +1,9 @@
 using MinhaApi.Repositories;
 using MinhaApi.Services;
 using System.Text;
+using System.Text.Json;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,6 +16,12 @@ builder.Services.AddCors(o => o.AddPolicy("front", p =>
     p.WithOrigins("http://localhost:5173")
      .AllowAnyHeader()
      .AllowAnyMethod()));
+
+// JSON camelCase para compatibilidade com frontend TypeScript
+builder.Services.ConfigureHttpJsonOptions(o =>
+    o.SerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase);
+builder.Services.Configure<JsonOptions>(o =>
+    o.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase);
 
 // Repositórios
 builder.Services.AddScoped<IProdutosRepository, ProdutosRepository>();

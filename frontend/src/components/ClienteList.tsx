@@ -3,9 +3,11 @@ import {type Cliente } from '../types/Cliente'
 interface Props {
   clientes: Cliente[]
   loading: boolean
+  onEditar?: (cliente: Cliente) => void
+  onExcluir?: (id: number) => void
 }
 
-function ClienteList({ clientes, loading }: Props) {
+function ClienteList({ clientes, loading, onEditar, onExcluir }: Props) {
   if (loading) return <div className="management-loading">Carregando clientes...</div>
   if (clientes.length === 0) {
     return (
@@ -15,6 +17,13 @@ function ClienteList({ clientes, loading }: Props) {
         <p>Cadastre seu primeiro contato usando o formulário.</p>
       </div>
     )
+  }
+
+  const handleExcluir = (id: number, e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (window.confirm('Tem certeza que deseja excluir este cliente?')) {
+      onExcluir?.(id)
+    }
   }
 
   return (
@@ -30,6 +39,26 @@ function ClienteList({ clientes, loading }: Props) {
           <span className={`management-status${c.ativo ? '' : ' management-status--inactive'}`}>
             {c.ativo ? 'Ativo' : 'Inativo'}
           </span>
+          <div className="management-record-actions">
+            {onEditar && (
+              <button
+                className="management-action-btn management-action-btn--edit"
+                onClick={(e) => { e.stopPropagation(); onEditar(c); }}
+                aria-label={`Editar ${c.nome}`}
+              >
+                ✎
+              </button>
+            )}
+            {onExcluir && (
+              <button
+                className="management-action-btn management-action-btn--delete"
+                onClick={(e) => handleExcluir(c.id, e)}
+                aria-label={`Excluir ${c.nome}`}
+              >
+                🗑
+              </button>
+            )}
+          </div>
         </li>
       ))}
     </ul>

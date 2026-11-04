@@ -12,6 +12,15 @@ export const ProdutoService = {
   criar: async (p: NovoProduto): Promise<Produto> => {
     const { data } = await api.post('/produto', p)
     return data
+  },
+
+  atualizar: async (id: number, produto: Partial<NovoProduto>): Promise<Produto> => {
+    const { data } = await api.put(`/produto/${id}`, produto)
+    return data
+  },
+
+  excluir: async (id: number): Promise<void> => {
+    await api.delete(`/produto/${id}`)
   }
 
 }

@@ -48,16 +48,16 @@ public class DashboardService : IDashboardService
         return _repo.ObterTopProdutos(CalcularInicio(dias), limite);
     }
 
-    public List<UltimaVenda> ObterUltimasVendas(int limite)
+    public List<UltimaVenda> ObterUltimasVendas(int dias, int limite)
     {
         ValidarLimite(limite);
-        return _repo.ObterUltimasVendas(limite);
+        return _repo.ObterUltimasVendas(CalcularInicio(dias), limite);
     }
 
     public List<ProdutoEstoqueBaixo> ObterEstoqueBaixo(int minimo)
     {
-        if (minimo < 0)
-            throw new ArgumentException("O estoque mínimo não pode ser negativo.");
+        if (minimo <= 0)
+            throw new ArgumentException("O estoque mínimo deve ser maior que zero.");
         return _repo.ObterEstoqueBaixo(minimo);
     }
 }

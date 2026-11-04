@@ -15,8 +15,8 @@ export const dashboardService = {
     const { data } = await api.get('/dashboard/top-produtos', { params: { dias, limite } })
     return data
   },
-  ultimasVendas: async (limite: number): Promise<UltimaVenda[]> => {
-    const { data } = await api.get('/dashboard/ultimas-vendas', { params: { limite } })
+  ultimasVendas: async (dias: number, limite: number): Promise<UltimaVenda[]> => {
+    const { data } = await api.get('/dashboard/ultimas-vendas', { params: { dias, limite } })
     return data
   },
   estoqueBaixo: async (minimo: number): Promise<ProdutoEstoqueBaixo[]> => {

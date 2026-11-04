@@ -1,36 +1,60 @@
-import { useState, type FormEvent } from 'react'
+import { useState, type FormEvent, useEffect } from 'react'
 import { ProdutoService } from '../services/ProdutoService'
+import type { Produto } from '../types/Produto'
 
 interface Props {
   onProdutoCriado: () => void
+  onProdutoEditado?: () => void
+  produto?: Produto | null
 }
 
-function ProdutoForm({ onProdutoCriado }: Props) {
+function ProdutoForm({ onProdutoCriado, onProdutoEditado, produto }: Props) {
   const [nome, setNome] = useState('')
   const [preco, setPreco] = useState('')
   const [estoque, setEstoque] = useState('')
   const [ativo, setAtivo] = useState(false)
   const [loading, setLoading] = useState(false)
   const [erro, setErro] = useState<string | null>(null)
+  const isEditing = !!produto
+
+  // Pre-populate form when editing
+  useEffect(() => {
+    if (produto) {
+      setNome(produto.nome)
+      setPreco(produto.preco.toString())
+      setEstoque(produto.estoque.toString())
+      setAtivo(produto.ativo)
+    } else {
+      setNome('')
+      setPreco('')
+      setEstoque('')
+      setAtivo(false)
+    }
+  }, [produto])
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setErro(null)
     try {
       setLoading(true)
-      await ProdutoService.criar({
-        nome,
-        preco: Number(preco),
-        estoque: Number(estoque),
-        ativo,
-      })
+      if (isEditing && produto) {
+        await ProdutoService.atualizar(produto.id, { nome, preco: Number(preco), estoque: Number(estoque), ativo })
+        onProdutoEditado?.()
+      } else {
+        await ProdutoService.criar({
+          nome,
+          preco: Number(preco),
+          estoque: Number(estoque),
+          ativo,
+        })
+        onProdutoCriado()
+      }
       setNome('')
       setPreco('')
       setEstoque('')
       setAtivo(false)
-      onProdutoCriado()
     } catch {
-      setErro('Erro ao cadastrar. Tente novamente.')
+      setErro(isEditing ? 'Erro ao atualizar. Tente novamente.' : 'Erro ao cadastrar. Tente novamente.')
     } finally {
       setLoading(false)
     }
@@ -39,10 +63,10 @@ function ProdutoForm({ onProdutoCriado }: Props) {
   return (
     <section className="management-card">
       <header className="management-card-heading">
-        <span className="management-card-heading-icon" aria-hidden="true">＋</span>
+        <span className="management-card-heading-icon" aria-hidden="true">{isEditing ? '✎' : '＋'}</span>
         <div>
-          <h2>Novo produto</h2>
-          <p>Adicione um item ao catálogo</p>
+          <h2>{isEditing ? 'Editar produto' : 'Novo produto'}</h2>
+          <p>{isEditing ? 'Atualize os dados do produto' : 'Adicione um item ao catálogo'}</p>
         </div>
       </header>
       {erro && <p className="management-notice" role="alert">{erro}</p>}
@@ -73,7 +97,7 @@ function ProdutoForm({ onProdutoCriado }: Props) {
       </div>
 
       <button className="management-submit" type="submit" disabled={loading}>
-        {loading ? 'Salvando produto...' : 'Cadastrar produto'}
+        {loading ? (isEditing ? 'Salvando alterações...' : 'Salvando produto...') : (isEditing ? 'Atualizar produto' : 'Cadastrar produto')}
         {!loading && <span aria-hidden="true">→</span>}
       </button>
       </form>
