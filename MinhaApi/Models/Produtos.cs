@@ -1,4 +1,5 @@
 namespace MinhaApi.Models;
+using System.Text.Json.Serialization;
 public class Produtos
 {
     public int Id {get; set;}
@@ -12,5 +13,7 @@ public class Produtos
 
     public bool Ativo {get; set;}
         = true;
-
+    [JsonIgnore]
+    public string? Foto    { get; set; }
+    public string? FotoBase64 { get; set; }
 }

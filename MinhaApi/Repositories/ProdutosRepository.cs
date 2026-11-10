@@ -113,4 +113,16 @@ public class ProdutosRepository : IProdutosRepository
         cmd.Parameters.AddWithValue("@Id", id);
         cmd.ExecuteNonQuery();
     }
+    public void AtualizarFoto(int id, string? nomeArquivo)
+{
+    using var conn = new MySqlConnection(_connectionString);
+    conn.Open();
+    using var cmd = new MySqlCommand(
+        "UPDATE produtos SET foto = @Foto WHERE id = @Id", conn);
+
+    cmd.Parameters.AddWithValue("@Foto",
+        (object?)nomeArquivo ?? DBNull.Value); // null → NULL no banco
+    cmd.Parameters.AddWithValue("@Id", id);
+    cmd.ExecuteNonQuery();
+}
 }

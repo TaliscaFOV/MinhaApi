@@ -42,7 +42,7 @@ builder.Services.AddScoped<IDepartamentoService, DepartamentoService>();
 builder.Services.AddScoped<ITipoService, TipoService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
-
+builder.Services.AddScoped<IFotoService, FotoService>();
 
 var jwtKey = builder.Configuration["Jwt:Key"]!;
 builder.Services
@@ -67,8 +67,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 app.UseCors("front");
-app.UseAuthentication();  // 1º quem é você?
-app.UseAuthorization();   // 2º você pode entrar?
+app.UseStaticFiles();
+app.UseAuthentication(); 
+app.UseAuthorization();  
 app.MapControllers();
 
 app.Run();

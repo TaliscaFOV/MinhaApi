@@ -9,6 +9,8 @@ public interface IProdutosRepository
     void Add(Produtos produto);
     void Update(Produtos produto);
     void Delete(int id);
-
     void AtualizarEstoque(int id, int quantidade);
+
+    void AtualizarFoto(int id, string? nomeArquivo);
+
 }

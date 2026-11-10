@@ -9,4 +9,6 @@ public interface IProdutosService
     Produtos  Create(Produtos produto);
     Produtos? Update(int id, Produtos produto);
     bool     Delete(int id);
+    Task<string> SalvarFoto(int id, IFormFile arquivo);
+    void RemoverFoto(int id);
 }
