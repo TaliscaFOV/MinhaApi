@@ -1,7 +1,8 @@
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MinhaApi.Models;
 using MinhaApi.Services;
-using Microsoft.AspNetCore.Authorization;
 
 [Authorize]
 [ApiController]
@@ -71,8 +72,8 @@ public class ProdutoController : ControllerBase
         return NoContent();
     }
     [HttpPost("{id}/foto")]
-public async Task<IActionResult> UploadFoto(
-    int id, IFormFile arquivo)
+[Consumes("multipart/form-data")]
+public async Task<IActionResult> UploadFoto(int id, IFormFile arquivo)
 {
     if (arquivo == null || arquivo.Length == 0)
         return BadRequest(new { message = "Nenhum arquivo enviado." });
@@ -80,13 +81,16 @@ public async Task<IActionResult> UploadFoto(
     try
     {
         var fotoBase64 = await _service.SalvarFoto(id, arquivo);
-        // Retorna a data URL pronta para o React usar no <img src>
         return Ok(new { fotoBase64 });
     }
     catch (KeyNotFoundException ex)
-        { return NotFound(new { message = ex.Message }); }
+    {
+        return NotFound(new { message = ex.Message });
+    }
     catch (ArgumentException ex)
-        { return BadRequest(new { message = ex.Message }); }
+    {
+        return BadRequest(new { message = ex.Message });
+    }
 }
 
 [HttpDelete("{id}/foto")]

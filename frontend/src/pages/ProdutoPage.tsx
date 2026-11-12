@@ -39,6 +39,24 @@ function ProdutoPage() {
     carregarProduto()
   }
 
+  const handleUploadFoto = async (id: number, arquivo: File) => {
+    try {
+      const fotoBase64 = await ProdutoService.uploadFoto(id, arquivo)
+      setProdutos(prev => prev.map(p => (p.id === id ? { ...p, fotoBase64 } : p)))
+    } catch (err: any) {
+      alert(err?.response?.data?.message ?? 'Erro ao enviar a foto.')
+    }
+  }
+
+  const handleRemoverFoto = async (id: number) => {
+    try {
+      await ProdutoService.removerFoto(id)
+      setProdutos(prev => prev.map(p => (p.id === id ? { ...p, fotoBase64: null } : p)))
+    } catch (err: any) {
+      alert(err?.response?.data?.message ?? 'Erro ao remover a foto.')
+    }
+  }
+
   const produtosAtivos = produtos.filter(produto => produto.ativo).length
   const estoqueBaixo = produtos.filter(produto => produto.ativo && produto.estoque <= 5).length
 
@@ -89,6 +107,8 @@ function ProdutoPage() {
                 loading={loading}
                 onEditar={handleEditar}
                 onExcluir={handleExcluir}
+                onUploadFoto={handleUploadFoto}
+                onRemoverFoto={handleRemoverFoto}
               />}
         </section>
       </div>
