@@ -15,10 +15,19 @@ public class ProdutosService : IProdutosService
     }
 
     public IEnumerable<Produtos> GetAll()
-        => _repo.GetAll();
+        => _repo.GetAll().Select(AdicionarFotoBase64);
 
     public Produtos? GetById(int id)
-        => _repo.GetById(id);
+    {
+        var produto = _repo.GetById(id);
+        return produto == null ? null : AdicionarFotoBase64(produto);
+    }
+
+    private Produtos AdicionarFotoBase64(Produtos produto)
+    {
+        produto.FotoBase64 = _fotoService.LerBase64(produto.Foto);
+        return produto;
+    }
 
     public Produtos Create(Produtos produto)
     {

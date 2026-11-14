@@ -6,8 +6,25 @@ CREATE TABLE IF NOT EXISTS produto (
     nome VARCHAR(100) NOT NULL,
     preco DECIMAL(10,2) NOT NULL,
     estoque INT NOT NULL DEFAULT 0,
-    ativo TINYINT(1) NOT NULL DEFAULT 1
+    ativo TINYINT(1) NOT NULL DEFAULT 1,
+    foto VARCHAR(255) NULL
 );
+
+SET @coluna_foto_existe = (
+    SELECT COUNT(*)
+    FROM information_schema.columns
+    WHERE table_schema = DATABASE()
+      AND table_name = 'produto'
+      AND column_name = 'foto'
+);
+SET @sql_add_foto = IF(
+    @coluna_foto_existe = 0,
+    'ALTER TABLE produto ADD COLUMN foto VARCHAR(255) NULL',
+    'SELECT 1'
+);
+PREPARE stmt_add_foto FROM @sql_add_foto;
+EXECUTE stmt_add_foto;
+DEALLOCATE PREPARE stmt_add_foto;
 
 CREATE TABLE IF NOT EXISTS cliente (
     idCliente INT AUTO_INCREMENT PRIMARY KEY,

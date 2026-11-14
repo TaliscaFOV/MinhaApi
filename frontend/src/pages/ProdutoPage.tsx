@@ -51,7 +51,7 @@ function ProdutoPage() {
   const handleRemoverFoto = async (id: number) => {
     try {
       await ProdutoService.removerFoto(id)
-      setProdutos(prev => prev.map(p => (p.id === id ? { ...p, fotoBase64: null } : p)))
+      setProdutos(prev => prev.map(p => (p.id === id ? { ...p, fotoBase64: undefined } : p)))
     } catch (err: any) {
       alert(err?.response?.data?.message ?? 'Erro ao remover a foto.')
     }
@@ -88,8 +88,11 @@ function ProdutoPage() {
 
       <div className="management-content-grid">
         <ProdutoForm
-          onProdutoCriado={carregarProduto}
-          onProdutoEditado={handleProdutoEditado}
+            onProdutoCriado={carregarProduto}
+            onProdutoEditado={handleProdutoEditado}
+            onFotoAlterada={(id, fotoBase64) =>
+            setProdutos(prev => prev.map(p => (p.id === id ? { ...p, fotoBase64: fotoBase64 ?? undefined } : p)))
+          }
           produto={produtoEditando}
         />
         <section className="management-card">

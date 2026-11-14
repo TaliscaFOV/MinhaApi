@@ -13,7 +13,7 @@ public class ProdutosRepository : IProdutosRepository
             ?? throw new InvalidOperationException("Connection string 'DefaultConnection' was not found.");
     }
 
-    private const string Colunas = "idProduto, nome, preco, estoque, ativo";
+    private const string Colunas = "idProduto, nome, preco, estoque, ativo, foto";
 
     private static Produtos LerProduto(MySqlDataReader reader)
     {
@@ -23,7 +23,10 @@ public class ProdutosRepository : IProdutosRepository
             Nome = reader.GetString("nome"),
             Preco = reader.GetDecimal("preco"),
             Estoque = reader.GetInt32("estoque"),
-            Ativo = reader.GetBoolean("ativo")
+            Ativo = reader.GetBoolean("ativo"),
+            Foto = reader.IsDBNull(reader.GetOrdinal("foto"))
+                ? null
+                : reader.GetString("foto")
         };
     }
 
@@ -118,7 +121,7 @@ public class ProdutosRepository : IProdutosRepository
     using var conn = new MySqlConnection(_connectionString);
     conn.Open();
     using var cmd = new MySqlCommand(
-        "UPDATE produtos SET foto = @Foto WHERE id = @Id", conn);
+        "UPDATE produto SET foto = @Foto WHERE idProduto = @Id", conn);
 
     cmd.Parameters.AddWithValue("@Foto",
         (object?)nomeArquivo ?? DBNull.Value); // null → NULL no banco

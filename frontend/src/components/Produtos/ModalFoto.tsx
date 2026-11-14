@@ -34,8 +34,6 @@ function ModalFoto({ produto, onClose }: Props) {
           background:'none', border:'none',
           fontSize:22, cursor:'pointer', color:'#555'
         }}>✕</button>
-
-        // ✅ Usa fotoBase64 diretamente — sem getFotoUrl!
         <img
           src={produto.fotoBase64}
           alt={produto.nome}

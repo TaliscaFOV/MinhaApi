@@ -29,8 +29,7 @@ export const ProdutoService = {
 
     const { data } = await api.post(
       `/produto/${id}/foto`,
-      formData,
-      { headers: { 'Content-Type': 'multipart/form-data' } }
+      formData
     )
     return data.fotoBase64 // data URL retornada pelo backend
   },

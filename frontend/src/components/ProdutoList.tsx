@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import type { MouseEvent } from 'react'
 import type { Produto } from '../types/Produto'
+import ModalFoto from '../components/Produtos/ModalFoto'
 
 interface Props {
   produtos: Produto[]
@@ -21,16 +22,6 @@ function ProdutoList({
 }: Props) {
   // Hooks sempre ANTES dos returns antecipados
   const [produtoModal, setProdutoModal] = useState<Produto | null>(null)
-
-  // Fecha o modal com ESC
-  useEffect(() => {
-    if (!produtoModal) return
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setProdutoModal(null)
-    }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
-  }, [produtoModal])
 
   if (loading) return <div className="management-loading">Carregando produtos...</div>
   if (produtos.length === 0) {
@@ -165,28 +156,14 @@ function ProdutoList({
         ))}
       </ul>
 
-      {produtoModal?.fotoBase64 && (
-        <div
-          onClick={() => setProdutoModal(null)}
-          role="dialog"
-          aria-modal="true"
-          aria-label={`Foto de ${produtoModal.nome}`}
-          style={{
-            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            zIndex: 1000, cursor: 'zoom-out'
-          }}
-        >
-          <img
-            src={produtoModal.fotoBase64}
-            alt={produtoModal.nome}
-            style={{ maxWidth: '90vw', maxHeight: '90vh', borderRadius: 8 }}
-          />
-        </div>
+      {produtoModal && (
+        <ModalFoto
+          produto={produtoModal}
+          onClose={() => setProdutoModal(null)}
+        />
       )}
     </>
   )
-  
 }
 
 export default ProdutoList
